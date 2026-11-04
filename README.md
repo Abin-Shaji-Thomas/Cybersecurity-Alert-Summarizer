@@ -104,7 +104,7 @@ http://localhost:8000/docs). `start.bat` opens both terminals and the browser fo
 Other commands (in `backend/` with the venv activated):
 
 ```powershell
-python -m pytest -q          # 18 tests
+python -m pytest -q          # 19 tests
 python -m nlp.evaluate       # evaluation -> data/eval/results.json, docs/RESULTS.md, docs/figures/
 ```
 

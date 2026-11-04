@@ -88,7 +88,7 @@ Attacker IP (from the dirb/wpscan windows): russellmitchell `172.19.131.174`, sh
 `data/sample/sample_alerts.json` is built by `backend/scripts/make_sample.py` from **russellmitchell**:
 1,515 raw alerts from 2022-01-24 03:00–04:45 and 13:45–14:30 UTC (all attack phases). The flood of
 *Web server 400 error code* alerts keeps every 6th alert and Dovecot/ClamAV background every 3rd; the rest is
-kept as is. After deduplication the app sees 1,467 alerts.
+kept as is. After deduplication the app sees 1,467 alerts (22 alert types), which the pipeline groups into 18 incidents (7 High/Critical).
 
 ## Test samples
 
