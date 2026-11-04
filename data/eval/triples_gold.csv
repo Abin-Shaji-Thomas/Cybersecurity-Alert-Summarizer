@@ -1,0 +1,21 @@
+id,sentence,actor,action_head,target,status
+1,"At 21:11:03, host 172.27.180.4 reported 'Suricata: Alert - SURICATA HTTP invalid response chunk len' from 151.101.193.29 targeting port 35888 (level 8).",151.101.193.29,send,172.27.180.4:35888,DRAFT – student to review
+2,"At 09:22:26, host webserver reported 'Suricata: Alert - SURICATA TLS invalid handshake message' from 172.19.130.4 targeting port 50842 (level 6).",172.19.130.4,send,webserver:50842,DRAFT – student to review
+3,"At 03:25:30, host intranet-server reported 'PAM: Login session closed' for user gmarsh (level 3).",gmarsh,close,intranet-server,DRAFT – student to review
+4,"At 14:39:14, host intranet-server reported 'Common web attack' from 172.24.249.224 targeting port 80 requesting /_mem_bin (level 6).",172.24.249.224,attack,intranet-server:80,DRAFT – student to review
+5,"At 14:38:53, host intranet-server reported 'Apache: Attempt to access forbidden directory index' from 172.24.249.224 (level 5).",172.24.249.224,access,intranet-server,DRAFT – student to review
+6,"At 13:28:43, host collinsbecker-mail reported 'Dovecot Invalid User Login Attempt' for user michael.sutton from 10.70.34.215 (level 5).",10.70.34.215,attempt,collinsbecker-mail,DRAFT – student to review
+7,"At 16:42:43, host mail reported 'Dovecot Authentication Success' for user dorothy.ellis (level 3).",dorothy.ellis,authenticate,mail,DRAFT – student to review
+8,"At 15:21:09, host intranet-server reported 'PAM: Login session opened' for user root (level 3).",root,open,intranet-server,DRAFT – student to review
+9,"At 09:49:46, host mail reported 'Dovecot brute force attack (multiple auth failures)' for user alyssa.hayes from 172.19.130.4 (level 10).",172.19.130.4,attack,mail,DRAFT – student to review
+10,"At 03:57:35, host intranet-server reported 'Multiple web server 400 error codes from same source ip' from 172.19.131.174 targeting port 80 requesting /profile (level 10).",172.19.131.174,request,intranet-server:80,DRAFT – student to review
+11,"At 12:36:35, host intranet-server reported 'sshd: authentication success' for user gmarsh from 172.24.249.224 (level 3).",172.24.249.224,authenticate,intranet-server,DRAFT – student to review
+12,"At 03:57:34, host intranet-server reported 'Web server 400 error code' from 172.19.131.174 targeting port 80 requesting /party (level 5).",172.19.131.174,request,intranet-server:80,DRAFT – student to review
+13,"At 03:57:56, host intranet-server reported 'Web server 500 error code (Internal Error)' from 172.19.131.174 targeting port 80 requesting /wp-content/themes/go/ (level 5).",172.19.131.174,request,intranet-server:80,DRAFT – student to review
+14,"At 04:37:58, host intranet-server reported 'Successful sudo to ROOT executed' for user root (level 3).",root,execute,intranet-server,DRAFT – student to review
+15,"At 12:34:57, host intranet-server reported 'CMS (WordPress or Joomla) login attempt' from 192.168.188.32 targeting port 80 requesting /wp-login.php (level 3).",192.168.188.32,attempt,intranet-server:80,DRAFT – student to review
+16,"At 18:25:40, host morris-mail reported 'ClamAV database update' (level 3).",ClamAV,update,morris-mail,DRAFT – student to review
+17,"At 15:20:51, host intranet-server reported 'User successfully changed UID' for user gmarsh (level 3).",gmarsh,change,intranet-server,DRAFT – student to review
+18,"At 14:39:14, host intranet-server reported 'Suspicious URL access' from 172.24.249.224 targeting port 80 requesting /.ssh (level 6).",172.24.249.224,access,intranet-server:80,DRAFT – student to review
+19,"At 03:57:18, host vpn reported 'Suricata: Alert - ET SCAN Possible Nmap User-Agent Observed' from 172.19.131.174 targeting port 80 requesting /nmaplowercheck1642996638 (level 3).",172.19.131.174,scan,vpn:80,DRAFT – student to review
+20,"At 03:57:15, host mail reported 'Suricata: Alert - SURICATA SMTP invalid reply' from 172.19.130.4 targeting port 53440 (level 6).",172.19.130.4,send,mail:53440,DRAFT – student to review

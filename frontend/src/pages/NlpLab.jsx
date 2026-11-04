@@ -205,7 +205,7 @@ export default function NlpLab() {
               <Technique name="Triple extraction (actor, action, target)" what="From the dependency tree: object of 'from' = actor, head of the quoted alert = action, subject of 'reported' (+ port) = target.">
                 <table className="kv"><tbody>
                   <tr><th>actor</th><td className="mono">{res.unit3.triple.actor || '–'}</td></tr>
-                  <tr><th>action</th><td>{res.unit3.triple.action || '–'} <span className="muted">(head: {res.unit3.triple.action_head || '–'})</span></td></tr>
+                  <tr><th>action</th><td>{res.unit3.triple.action || '–'} <span className="muted">(verb: {res.unit3.triple.action_head || '–'})</span></td></tr>
                   <tr><th>target</th><td className="mono">{res.unit3.triple.target || '–'}</td></tr>
                 </tbody></table>
               </Technique>

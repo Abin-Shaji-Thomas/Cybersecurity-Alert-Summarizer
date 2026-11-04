@@ -58,7 +58,9 @@ def _find_pobj(doc, prep_word):
     for t in doc:
         if t.dep_ in ("prep", "agent") and t.lower_ == prep_word and not (qa < t.i < qb):
             objs = [c for c in t.children if c.dep_ == "pobj"]
-            if objs:
+            # accept the parse only if the object is an entity (IP / USER / HOST); on long sentences the
+            # small parser sometimes attaches "from" to a later noun such as "level" or "port"
+            if objs and objs[0].ent_type_:
                 return objs[0]
     # parser attached the object elsewhere: take the word right after the preposition
     for t in doc:
@@ -70,9 +72,35 @@ def _find_pobj(doc, prep_word):
     return None
 
 
+# Nouns that describe the OUTCOME or the report itself, not the action ("authentication success",
+# "400 error code", "IDS event"). For these we look at the modifiers for the real action word.
+OUTCOME_NOUNS = {"success", "failure", "error", "code", "event", "alert", "message", "len", "header",
+                 "record", "traffic", "reply", "id", "ip", "source", "index", "file", "directory"}
+
+
+@lru_cache(maxsize=4096)
+def noun_to_verb(noun):
+    """Nominalisation -> verb with WordNet derivational morphology (Unit III lexical semantics):
+    attack -> attack, authentication -> authenticate, update -> update, access -> access.
+    Returns None when WordNet knows no related verb."""
+    from nltk.corpus import wordnet as wn
+    verbs = Counter()
+    for lemma in wn.lemmas(noun, pos="n"):
+        for d in lemma.derivationally_related_forms():
+            if d.synset().pos() == "v":
+                verbs[d.name().lower()] += 1
+    if not verbs:
+        return None
+    if noun in verbs:              # the same word is also a verb (attack, update, attempt)
+        return noun
+    return verbs.most_common(1)[0][0]
+
+
 def _action_from_quote(doc):
-    """The quoted alert description is the 'action'. Prefer a real verb inside the quote
-    (executed, changed, observed, failed); otherwise use the head noun phrase."""
+    """The quoted alert description says what happened. Returns (action verb lemma, action phrase).
+      1. a real verb inside the quote (executed, changed, closed) -> its lemma;
+      2. otherwise the head noun phrase, and its head noun is turned into a verb with WordNet
+         (skipping outcome nouns like 'success' / 'code', whose modifiers carry the action)."""
     qa, qb = _quote_span(doc)
     span = doc[qa + 1:qb] if qa >= 0 else doc
     verbs = [t for t in span if t.pos_ == "VERB" and t.dep_ not in ("amod",)]
@@ -86,14 +114,24 @@ def _action_from_quote(doc):
     if not nouns:
         return None, span.text.lower()
     head, phrase = np_head(nouns[-1])
-    return head.lemma_.lower(), phrase.lower()
+    # candidates: the head noun first, then its modifiers right-to-left ("authentication success")
+    mods = sorted((t for t in span if t.i < head.i and t.pos_ in NOUNY), key=lambda t: -t.i)
+    for cand in [head] + mods:
+        word = cand.lemma_.lower()
+        if word in OUTCOME_NOUNS or not word.isalpha():
+            continue
+        verb = noun_to_verb(word)
+        if verb:
+            return verb, phrase.lower()
+    return None, phrase.lower()
 
 
 def extract_triple(doc):
     """(actor, action, target) for one alert sentence.
 
     actor  = object of the preposition 'from' (the source IP); else the user ('for user X')
-    action = head of the quoted alert description (verb if present, else head noun phrase)
+    action = verb of the quoted alert description (a verb inside it, else its head noun turned
+             into a verb with WordNet); 'action' keeps the readable phrase, 'action_head' the verb
     target = the reporting host (nsubj of 'reported') plus the targeted port if any
     """
     actor_tok = _find_pobj(doc, "from")
@@ -103,7 +141,8 @@ def extract_triple(doc):
     host = None
     for t in doc:
         if t.dep_ == "nsubj" and t.head.lemma_ == "report":
-            host = t.text
+            # "host 172.27.180.4 reported": the subject may be the keyword "host" itself -> take its value
+            host = doc[t.i + 1].text if t.lower_ == "host" and t.i + 1 < len(doc) else t.text
             break
     if host is None:
         ents = [e.text for e in doc.ents if e.label_ == "HOST"]
@@ -126,7 +165,7 @@ def extract_triples(texts, batch_size=256):
 # ---------------------------------------------------------------- 3. parser / triple evaluation
 def evaluate_triples(pred, gold):
     """A predicted triple is correct when actor, target and action head all match the gold triple
-    (case-insensitive; action compared on its head word so 'error code' == 'code').
+    (case-insensitive; the action is compared as a verb lemma, so 'attempted' == 'attempt').
     Precision = correct / predicted-non-empty, Recall = correct / gold."""
     def key(t):
         return (str(t.get("actor") or "").lower(), str(t.get("action_head") or "").lower(),
