@@ -326,7 +326,10 @@ def retrieve(question, sentences, k=5, vec_cache=None):
     """Information retrieval: TF-IDF cosine between the question and every alert sentence."""
     if vec_cache is None:
         vec = TfidfVectorizer(token_pattern=r"[a-z0-9][a-z0-9_\-.]+", sublinear_tf=True)
-        X = vec.fit_transform([s.lower() for s in sentences])
+        try:
+            X = vec.fit_transform([s.lower() for s in sentences])
+        except ValueError:          # no usable words at all -> nothing to retrieve
+            return []
     else:
         vec, X = vec_cache
     q = vec.transform([question.lower()])
@@ -390,7 +393,7 @@ def answer_question(question, alerts, relations, incidents, vec_cache=None):
     elif re.search(r"mitre|technique|tactic|att&ck", q):
         intent = "mitre"
         m = sub[sub["mitre_id"].notna()]
-        ans = ("MITRE techniques: " + top(m["mitre_id"]) + ". Tactics: " + top(m["mitre_tactic"].str.split(",").explode(), 6) + ".") if len(m) else "No MITRE techniques in these alerts."
+        ans = ("MITRE techniques: " + top(m["mitre_id"].str.split(",").explode()) + ". Tactics: " + top(m["mitre_tactic"].str.split(",").explode(), 6) + ".") if len(m) else "No MITRE techniques in these alerts."
         support_df = m
     elif "how many" in q or "count" in q or "number of" in q:
         intent = "count"

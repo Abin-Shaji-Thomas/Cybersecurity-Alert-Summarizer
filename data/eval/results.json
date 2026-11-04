@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-11-04 18:51",
- "seconds": 133.2,
+ "generated_at": "2026-11-04 19:01",
+ "seconds": 93.7,
  "scenarios": {
   "russellmitchell": {
    "n_alerts": 21354,
    "n_alert_types": 33,
    "n_incidents": 214,
    "n_high_or_critical": 61,
-   "seconds": 26.2,
+   "seconds": 17.4,
    "lm": {
     "n_train_sentences": 126,
     "n_test_sentences": 31,
@@ -370,7 +370,7 @@
    "n_alert_types": 36,
    "n_incidents": 444,
    "n_high_or_critical": 124,
-   "seconds": 29.7,
+   "seconds": 18.7,
    "lm": {
     "n_train_sentences": 88,
     "n_test_sentences": 21,
@@ -1394,7 +1394,7 @@
   ],
   "abstractive_model": "sshleifer/distilbart-cnn-6-6",
   "abstractive_error": null,
-  "abstractive_seconds_per_summary": 2.52
+  "abstractive_seconds_per_summary": 1.95
  },
  "ner": {
   "n_sentences": 50,

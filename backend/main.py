@@ -1,6 +1,8 @@
 """FastAPI entry point.  Run from the backend folder:
     .venv\\Scripts\\uvicorn main:app --reload --port 8000
 """
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -8,7 +10,15 @@ from fastapi.responses import JSONResponse
 from db.database import init_db
 from routers import analyses, evaluation, incidents, lab
 
-app = FastAPI(title="Cybersecurity Alert Summarizer", version="1.0")
+
+
+@asynccontextmanager
+async def lifespan(app):
+    init_db()          # create the tables from db/schema.sql if they do not exist yet
+    yield
+
+
+app = FastAPI(title="Cybersecurity Alert Summarizer", version="1.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -16,11 +26,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.on_event("startup")
-def startup():
-    init_db()
 
 
 @app.exception_handler(Exception)

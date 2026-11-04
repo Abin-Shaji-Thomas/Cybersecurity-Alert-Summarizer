@@ -97,8 +97,12 @@ def add_host_patterns(hosts):
 def extract_entities(doc, keep_cardinal=False):
     """Security entities + spaCy's built-in ones. CARDINAL is dropped by default: in our sentences it is
     almost always the Wazuh level number ("level 5"), which is not useful as an entity."""
+    # spaCy's news-trained model also tags requested URL paths ("/icq", "/backup/x.zip") as ORG/GPE:
+    # those are not organisations or places, so built-in entities that look like paths are dropped.
     return [{"text": e.text, "label": e.label_, "start": e.start_char, "end": e.end_char}
-            for e in doc.ents if keep_cardinal or e.label_ != "CARDINAL"]
+            for e in doc.ents
+            if (keep_cardinal or e.label_ != "CARDINAL")
+            and not (e.label_ not in SEC_LABELS and (e.text.startswith("/") or "/" in e.text.split()[0]))]
 
 
 def pos_tags(doc):
