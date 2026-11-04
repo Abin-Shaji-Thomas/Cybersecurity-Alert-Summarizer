@@ -1,48 +1,40 @@
 # Test samples
 
-Small, ready-to-upload alert files cut from the **real** AIT-ADS `shaw` scenario (29 January 2022) by
-`backend/scripts/make_test_samples.py`. They are raw Wazuh JSON-lines, exactly like the full dataset. Upload them on
-the Dashboard (drag & drop, or click the upload box). The numbers below are what the app produced for each file.
+Small, ready-to-upload alert files, one clear story each. Upload them on the **Dashboard** (drag & drop or click the
+upload box). Each file processes in about 8–16 seconds.
 
-| File | Raw alerts → after dedup | What it contains | What the app should show |
-|---|---|---|---|
-| `login_bruteforce.json` | 558 → 309 | 13:05–13:50 UTC. 10.70.34.215 guesses mail passwords on `collinsbecker-mail`: *PAM: User login failed*, *Dovecot Invalid User Login Attempt*, *Dovecot brute force attack*, *PAM: Multiple failed logins*. There is also normal mail/TLS background traffic. | 7 incidents, 3 High/Critical. Top: **Critical**, *PAM: User login failed … from 10.70.34.215* (44 alerts, **ongoing**, **attempted**). Phase `credential_access` from MITRE T1110 rules (this period is not an attack window in labels.csv, so no scenario is detected). |
-| `web_scan_dirb_wpscan.json` | 456 → 451 | 14:38:30–14:39:45 UTC. 172.24.249.224 runs wpscan and dirb against the web server: HTTP 400 floods (every 12th kept), *Suspicious URL access*, *Common web attack*. | Scenario `shaw` detected, phases `wpscan` → `dirb`. 6 incidents, 4 High/Critical. Top: **Critical**, *Multiple web server 400 error codes … from 172.24.249.224*. The host appears as `192.168.188.179`: this small file has no alert that carries that agent's hostname. |
-| `suspicious_dns_tls.json` | 771 → 348 | 12:00–12:15 and 14:44–15:06 UTC. DNS queries to `.cloud` domains (Suricata *ET INFO Observed DNS Query to .cloud TLD*) and a long series of malformed TLS traffic (*TLS invalid handshake / record*) from 10.70.32.4. | 11 incidents, 2 High/Critical. Top: *Multiple IDS alerts for same id … from 10.70.32.4* (Critical); TLS incidents of 82 alerts each (Medium); a DNS incident on port 53. |
-| `mixed_attack_chain.json` | 791 → 533 | 14:37–15:22 UTC, the whole attack in order: scans → wpscan → dirb → password cracking → privilege escalation (sudo to root by `gmarsh`). Floods are thinned (400 errors every 20th, mail background every 3rd). | Scenario `shaw`, 8 phases on the Timeline in order. 14 incidents, 5 High/Critical. Look for the web-scan incident (Critical) and the *PAM: Login session opened / Successful sudo to ROOT* incident, whose outcome is **succeeded**. |
-| `bad_file.txt` | – | Plain text, not JSON. | The upload is rejected with the message *Unsupported file type '.txt'…*; nothing is stored. |
-
-AIT-ADS has **no SSH brute-force attack**, so the brute-force example uses the real password-guessing attack on the mail
-server (PAM/Dovecot), which Wazuh flags as "brute force".
-
-Regenerate the files (needs the dataset in `data/raw/`):
+All files use the raw Wazuh JSON-lines format of the AIT-ADS dataset, exactly what the app's loader reads. They are
+built by `backend/scripts/make_test_samples.py`, which needs the dataset in `data/raw/`:
 
 ```powershell
 backend\.venv\Scripts\python backend\scripts\make_test_samples.py
 ```
 
-## Example questions for the Ask tab
+- **Real** files are time windows cut from the AIT-ADS scenarios `russellmitchell` and `shaw`. Floods are thinned (e.g. only every 30th "Web server 400 error code"), and `05` keeps only low-severity alerts.
+- **Synthetic** files (`synthetic_` prefix) tell stories that AIT-ADS does not contain. Every synthetic alert is a copy of a **real** AIT-ADS alert (sshd rule 5715, sshd scan 5706, Suricata eve 86601, web access log 31101/31104, ClamAV 52507). Only values were changed: IPs, ports, users, hosts, timestamps, the rule description/id/level/MITRE ids and the log line. No new fields were added. The IPs are documentation ranges (203.0.113.x, 198.51.100.x).
+- AIT-ADS contains **no SSH login failures** (only SSH successes and SSH scans) and **no CVE alerts**. That's why the SSH brute-force and CVE files are synthetic. The real brute force in the dataset is password guessing against the mail server (PAM/Dovecot).
 
-Run on the bundled sample (*Use sample data*), or on `mixed_attack_chain.json` (use 172.24.249.224 there):
+## What each file shows
 
-1. `Which hosts did 172.19.131.174 attack?`
-2. `When did the attack start?`
-3. `What MITRE techniques were seen?`
-4. `Which ports were targeted?`
-5. `Which source IPs look suspicious?`
-6. `What should I do next?`
+Every number below comes from uploading the file through the API and the UI. "Top incident" is the first card on the Incidents tab, which sorts by severity, then size.
 
-On `login_bruteforce.json`: `How many failed logins were there?`
+| File | Real / synthetic | Scenario in plain English | What the app shows | Learning Units it shows best |
+|---|---|---|---|---|
+| `01_web_recon_scan.json` | Real (russellmitchell, 24 Jan 2022 03:56–03:58) | 172.19.131.174 attacks the intranet web server: an Nmap scan, SSH probes on many hosts, then dirb and wpscan, which cause floods of HTTP 400 errors and requests for hidden paths. | 443 raw → **392 alerts, 11 incidents** (1 Critical, 3 High, 7 Medium). Scenario `russellmitchell` detected; phases `service_scans → wpscan → dirb`. Top: **Critical** *Multiple web server 400 error codes … from 172.19.131.174*, repeated / attempted, MITRE T1595.002. Entities: 172.19.131.174, intranet-server, port 80, Nmap (TOOL). Relations: 172.19.131.174 ATTACKED intranet-server / vpn / webserver …, SCANNED port 80. | I (edit distance merges 400/500 errors, rarity), IV (TF-IDF incidents, relations), V (phases from labels.csv) |
+| `synthetic_02_ssh_bruteforce.json` | Synthetic | 203.0.113.45 guesses SSH passwords on intranet-server for 4 minutes: 60 attempts with 10 user names (root, admin, oracle, …), plus Wazuh's brute-force correlation alert every 15 tries. No login succeeds. | **64 alerts, 2 incidents**. Top: **Critical** *sshd: authentication failed on intranet-server from 203.0.113.45* (22 alerts), repeated / **attempted**, MITRE T1110.001, T1021.004, T1110. Second: Medium, 42 "non-existent user" alerts. USER entities: root, admin, oracle, ftpuser, … | II (NER: USER, IP, HOST), V (aspect: attempted; QA counts) |
+| `03_suspicious_dns_tls.json` | Real (shaw, 27 Jan 18:30–19:00 and 28 Jan 06:40–06:55) | A host queries a suspicious **.ga** domain (DNS) and immediately opens TLS to it (TLS SNI), the same pattern again the next morning, plus bursts of malformed TLS traffic and IDS correlation alerts. A possible C2 beacon. | 89 raw → **47 alerts, 11 incidents** (4 High, 5 Medium, 2 Low); no AIT-ADS attack window, so phases are `normal`. Top: **High** *Multiple IDS alerts for same id on 172.27.180.4 from 10.70.32.4*. Two Medium incidents *ET INFO DNS Query for Suspicious .ga Domain* (one per day) with the DNS recommendation. Hosts appear as IPs (172.27.180.4, 172.24.249.224): those sensors never report a hostname in shaw. | IV (relation extraction, time-gap split), II (PROTOCOL / PORT entities), V (temporal links between the two days) |
+| `04_multi_stage_attack.json` | Real (shaw, 29 Jan 14:37–15:22) | The full attack chain in time order: network/service scan → wpscan → dirb → password cracking → privilege escalation (gmarsh runs sudo and becomes root). | 239 raw → **142 alerts, 14 incidents** (1 Critical, 4 High, 4 Medium, 5 Low). Scenario `shaw` detected; phases in order `network_scans, service_scans, wpscan, dirb, cracking, privilege_escalation`. Top: **Critical** web scan from 172.24.249.224. The last incidents (*PAM: Login session opened*, *User successfully changed UID*, *Successful sudo to ROOT executed*) are **succeeded**. MITRE T1595.002, T1548.003. | V (temporal analysis, aspects), IV (incidents split by time gaps) |
+| `05_normal_noise.json` | Real (russellmitchell, 21 Jan 06:00–10:45, level ≤ 3 only) | An ordinary morning: SELinux checks (auditd) on 6 servers, the admin jhall's SSH sessions, ClamAV updates, Ubuntu package downloads (APT), mail logins, low-level TLS anomalies. | 248 raw → **142 alerts, 19 incidents: 18 Low, 1 Medium, nothing High or Critical**. *Which source IPs look suspicious?* → "none". The one Medium incident is the admin's SSH logins mixed with mail logins: Wazuh tags every SSH login with T1021 (Lateral Movement), and the severity rule counts that tactic. | I (low perplexity = routine text), V (severity rules, recommended action "Normal mail logins") |
+| `synthetic_06_bruteforce_then_success.json` | Synthetic | 198.51.100.23 tries 30 wrong passwords for user jhall over SSH on the mail server, then logs in successfully. | **34 alerts, 2 incidents**. Top: **Critical** *sshd: brute force trying to get access…* (3 correlation alerts), **attempted**. Second: Medium *sshd: authentication failed* (31 alerts incl. the login), **succeeded** with evidence *sshd: authentication success*. Relation: jhall LOGGED_INTO mail. Ask "Did the attacker log in successfully?" → **Yes**, at 22:42:35 from 198.51.100.23 for user jhall. | V (aspect attempted → succeeded, QA), IV (LOGGED_INTO relation) |
+| `synthetic_07_port_scan_many_hosts.json` | Synthetic | 198.51.100.77 probes SSH on 8 servers, then sends Nmap requests to 15 different ports. | **23 alerts, 2 incidents** (High, Low). Top: **High** *sshd: insecure connection attempt (scan)* on 8 hosts. Relation graph: one IP with **8 ATTACKED** edges (intranet-server, mail, vpn, webserver, cloud-share, internal-share, inet-dns, inet-firewall) and **15 SCANNED port** edges. TOOL entity Nmap. | IV (relation extraction + graph), II (HOST / TOOL entities) |
+| `synthetic_08_cve_exploit.json` | Synthetic | 203.0.113.9 sends exploit attempts to the web server: Log4Shell (CVE-2021-44228), Apache path traversal (CVE-2021-41773) and a sudo heap overflow (CVE-2021-3156), tagged with MITRE T1190 / T1068. A routine ClamAV update an hour earlier. | **14 alerts, 3 incidents** (2 Critical, 1 Low). Top: **Critical** *ET EXPLOIT Possible Sudo Heap Overflow Exploitation (CVE-2021-3156)*, privilege_escalation, attempted. CVE entities: CVE-2021-44228, CVE-2021-41773, CVE-2021-3156; MITRE: T1190, T1068 (+ T1055, T1083 from the real "Common web attack" rule). Recommended action: *Patch the software named in the alert (see the CVE)…*. The ClamAV update is its own Low incident. | II (security NER: CVE, MITRE_TECHNIQUE), V (recommended action lookup) |
+| `synthetic_09_two_attackers.json` | Synthetic | At the same time: 203.0.113.10 scans the intranet web server (60 requests for hidden paths) while 198.51.100.200 guesses SSH passwords on the mail server. | **121 alerts, 3 incidents**: **High** SSH incident (60 alerts, only 198.51.100.200, on mail), **Medium** web incident (60 alerts, only 203.0.113.10, on intranet-server), Low ClamAV. The two attackers are split by **what they do** (TF-IDF text clusters), because IPs are masked before clustering. Two attackers doing the *same* thing at the same time would end up in one incident. | IV (TF-IDF + KMeans clustering), V (QA per IP) |
+| `bad_empty.json` | Error test | An empty JSON array `[]`. | Upload accepted, then the analysis is **failed** with *"No Wazuh/Suricata alerts found (each alert needs a 'rule' object)."* in the history table. No crash. | – |
+| `bad_format.txt` | Error test | Plain text, not JSON. | Rejected straight away: *"Unsupported file type 'txt'. Upload a Wazuh/Suricata .json or .jsonl file."* Nothing is stored. | – |
+| `bad_missing_fields.json` | Error test | Valid JSON, but the objects have no `@timestamp` (and one has no `rule`). | Analysis **failed** with *"None of the alerts has a valid '@timestamp', so they cannot be put on a timeline."* No crash. | – |
 
-## Example texts for the NLP Lab
+## Honest notes
 
-Paste one into the NLP Lab text box and click **Run through Units I–V**:
-
-1. An alert sentence (all units, triple, entities):
-   `At 13:12:41, host collinsbecker-mail reported 'PAM: User login failed' for user michael.sutton from 10.70.34.215 (level 5).`
-2. A free-text analyst note (sentence segmentation, CVE / MITRE / tool entities):
-   `Attacker 172.24.249.224 used wpscan and dirb against intranet-server on port 80. Later the user gmarsh escalated to root with sudo (T1548.003), see CVE-2021-3156.`
-3. A sentence inside the toy CKY grammar (CKY table and tree):
-   `the attacker scanned the web server from 10.35.1.4`
-
-A raw JSON alert (one line copied from any file above) also works: the Lab converts it to a sentence first.
+- Phase labels come from the AIT-ADS `labels.csv` windows (files 01, 04). For other files they come from the MITRE tactic. Wazuh tags SSH failures with both T1110.001 (Credential Access) and T1021.004 (Lateral Movement), so the SSH files show `lateral_movement` as well as `credential_access`.
+- spaCy's statistical NER (trained on news) sometimes mislabels security words, e.g. "Suricata" as PERSON. The security EntityRuler labels (IP, HOST, USER, PORT, CVE, MITRE_TECHNIQUE, TOOL) are the reliable ones.
+- See `QUESTIONS.md` for verified Ask-tab questions and NLP Lab texts, and `DEMO_SCRIPT.md` for a viva demo order.

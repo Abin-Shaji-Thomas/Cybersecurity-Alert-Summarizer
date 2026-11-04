@@ -1,0 +1,21 @@
+[
+ {
+  "agent": {
+   "ip": "10.0.0.1",
+   "name": "wazuh-client"
+  },
+  "data": {
+   "srcip": "203.0.113.5"
+  },
+  "full_log": "some log line without a rule or a timestamp"
+ },
+ {
+  "rule": {
+   "level": 5,
+   "description": "Alert with a rule but no @timestamp"
+  },
+  "agent": {
+   "ip": "10.0.0.2"
+  }
+ }
+]
