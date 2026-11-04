@@ -103,3 +103,18 @@ def test_incident_aspects():
     assert incident_aspects(g.head(1))["frequency"] == "one-off"
     roles = srl_roles({"actor": "1.2.3.4", "action_head": None}, {"description": "Multiple IDS events", "timestamp": t[0]})
     assert roles["Action"].startswith("trigger")
+
+
+def test_aspect_and_action_follow_the_attacker():
+    import pandas as pd
+    from nlp.unit5_summarize_qa import fill_template, incident_aspects
+    t = pd.to_datetime(["2022-03-17T13:20:00Z", "2022-03-17T13:20:10Z", "2022-03-17T13:21:00Z"])
+    g = pd.DataFrame({"timestamp": t, "level": [12, 12, 3],
+                      "description": ["Suricata: Alert - ET EXPLOIT X (CVE-2021-3156)"] * 2 + ["sshd: authentication success"],
+                      "src_ip": ["203.0.113.9", "203.0.113.9", "10.0.0.15"],      # the login is from an unrelated admin IP
+                      "mitre_id": ["T1068", "T1068", None], "mitre_tactic": ["Privilege Escalation"] * 2 + [None],
+                      "user": [None, None, "admin"], "host": ["webserver"] * 3, "dst_port": [80, 80, None],
+                      "phase": ["normal"] * 3, "rarity_score": [5.0, 5.0, 2.0]})
+    assert incident_aspects(g)["outcome"] == "attempted"
+    g.loc[2, "description"] = "ClamAV database update"
+    assert "antivirus" not in fill_template(g, [], "Critical", 12)["recommended_action"].lower()

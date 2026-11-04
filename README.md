@@ -110,11 +110,33 @@ python -m nlp.evaluate       # evaluation -> data/eval/results.json, docs/RESULT
 
 ## How to use
 
-The folder [`test_samples/`](test_samples/) holds small files cut from the real dataset. Its README says what each file
-contains and what the app should show for it.
+### Test samples
 
-1. **Dashboard:** drag `test_samples/mixed_attack_chain.json` onto the upload box, or click **Use sample data**. The status
-   shows *processing* and changes to *done* after a few seconds. Uploading `test_samples/bad_file.txt` shows an error.
+The folder [`test_samples/`](test_samples/) holds 9 small, ready-to-upload alert files, one story each, plus 3 broken
+files for the error handling. The real ones are cut from AIT-ADS; the `synthetic_` ones are built from real alert
+structures for stories the dataset does not contain:
+
+| File | Story |
+|---|---|
+| `01_web_recon_scan.json` | Nmap / dirb / wpscan reconnaissance against the intranet web server (real) |
+| `synthetic_02_ssh_bruteforce.json` | many failed SSH logins from one IP (AIT-ADS has no SSH failures) |
+| `03_suspicious_dns_tls.json` | DNS + TLS to a suspicious `.ga` domain, possible C2 (real) |
+| `04_multi_stage_attack.json` | scans → wpscan → dirb → cracking → privilege escalation, in order (real) |
+| `05_normal_noise.json` | a normal morning of low-severity alerts: no High/Critical incident (real) |
+| `synthetic_06_bruteforce_then_success.json` | failed logins, then a successful one (attempted → succeeded) |
+| `synthetic_07_port_scan_many_hosts.json` | one IP scanning 8 hosts and 15 ports (relation graph) |
+| `synthetic_08_cve_exploit.json` | exploit alerts with CVE and MITRE ids (security NER) |
+| `synthetic_09_two_attackers.json` | two attackers at the same time, split into separate incidents |
+| `bad_empty.json`, `bad_format.txt`, `bad_missing_fields.json` | error handling |
+
+- [`test_samples/README.md`](test_samples/README.md): what the app shows for each file (verified results).
+- [`test_samples/QUESTIONS.md`](test_samples/QUESTIONS.md): verified Ask-tab questions and 5 NLP Lab texts.
+- [`test_samples/DEMO_SCRIPT.md`](test_samples/DEMO_SCRIPT.md): a 6–7 minute viva demo order.
+
+### Walkthrough
+
+1. **Dashboard:** drag `test_samples/04_multi_stage_attack.json` onto the upload box, or click **Use sample data**. The status
+   shows *processing* and changes to *done* after a few seconds. Uploading `test_samples/bad_format.txt` shows an error.
    ![Dashboard](docs/screenshots/01_dashboard.png)
 2. **Open analysis → Incidents:** cards sorted by severity, with keywords and a summary preview.
    ![Incidents](docs/screenshots/02_incidents.png)
@@ -122,8 +144,8 @@ contains and what the app should show for it.
    ![Timeline](docs/screenshots/03_timeline.png)
 4. **Entities & Relations:** the entity table (filter by label) and the attacker → target relation graph.
    ![Entities](docs/screenshots/04_entities.png)
-5. **Ask:** type a question such as *Which hosts did 172.19.131.174 attack?* or *When did the attack start?*
-   (more examples in `test_samples/README.md`).
+5. **Ask:** type a question such as *Which IP attacked the server?*, *When did the attack start?* or
+   *Did the attacker log in successfully?* (verified questions per file in `test_samples/QUESTIONS.md`).
    ![Ask](docs/screenshots/05_ask.png)
 6. **Incident detail** (click a card): template summary, aspect badges, extractive summary, **Generate AI summary**,
    filled slots, semantic roles, related alerts and **Download PDF**.
@@ -170,7 +192,7 @@ Cybersecurity-Alert-Summarizer/
 │   ├── sample/         sample_alerts.json (bundled sample)
 │   ├── eval/           gold files, labels.csv, results.json
 │   └── raw/            downloaded dataset (not in git)
-├── test_samples/       ready-to-upload example files + README
+├── test_samples/       ready-to-upload example files + README, QUESTIONS, DEMO_SCRIPT
 └── docs/               UNIT_MAPPING, VIVA_NOTES, DATABASE, DATASET, RESULTS, figures/, screenshots/
 ```
 
@@ -195,7 +217,7 @@ Details and figures: [docs/RESULTS.md](docs/RESULTS.md).
 
 | Metric | Value |
 |---|---|
-| ROUGE-1 / 2 / L, template summary (25 references) | **0.468** / 0.182 / 0.313 |
+| ROUGE-1 / 2 / L, template summary (25 references) | **0.463** / 0.180 / 0.310 |
 | ROUGE-1 / 2 / L, extractive (TF-IDF centroid) | 0.329 / 0.162 / 0.246 |
 | ROUGE-1 / 2 / L, abstractive (distilbart-cnn-6-6, CPU) | 0.349 / 0.166 / 0.246 |
 | NER micro P / R / F1 (50 sentences, 164 entities) | 0.994 / 0.994 / 0.994 |
@@ -211,7 +233,7 @@ Honest caveats:
 - NER 0.994 is inflated: most gold sentences follow the app's own sentence template, which the rules were written for.
 - Triple errors are mostly wrong verbs (e.g. "400 error code" gives no verb; the gold label is "request").
 - The AI summary mostly copies alert sentences and once shortened an IP address; the template summary is the reliable one.
-- The template's aspect sentence is not in the references, so it lowers ROUGE a little (0.495 → 0.468 ROUGE-1).
+- The template's aspect sentence and its recommended action (now taken from the most severe alerts) are not worded like the references, so ROUGE dropped a little (0.495 → 0.463 ROUGE-1).
 - The perplexity test sets are small (31 / 21 unique sentence patterns), because masking makes many alerts identical.
 - The HMM agreement is agreement, not accuracy: there is no gold POS for alert text.
 

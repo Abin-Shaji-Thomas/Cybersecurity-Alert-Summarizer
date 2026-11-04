@@ -142,6 +142,8 @@ def to_dataframe(raw_alerts):
     df = pd.DataFrame(rows)
     df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True, errors="coerce")
     df = df.dropna(subset=["timestamp"])
+    if df.empty:
+        raise ValueError("None of the alerts has a valid '@timestamp', so they cannot be put on a timeline.")
 
     # Host name: the agent IP is the only host id on many alerts, so learn
     # "agent ip -> hostname" from alerts that do carry a syslog hostname.

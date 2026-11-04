@@ -22,7 +22,10 @@ def process_analysis(analysis_id, raw):
             df = to_dataframe(read_alert_file(raw))
             res = run_pipeline(df, log=lambda m: print(f"[analysis {analysis_id}] {m}"))
             db.save_results(analysis_id, res)
-    except Exception as e:  # noqa: BLE001 - any failure must be recorded, not crash the server
+    except ValueError as e:  # bad input file (empty, not JSON, missing fields): a clear message, no traceback
+        print(f"[analysis {analysis_id}] rejected input: {e}")
+        db.mark_failed(analysis_id, f"{type(e).__name__}: {e}")
+    except Exception as e:  # noqa: BLE001 - unexpected bug: record it and keep the traceback for debugging
         traceback.print_exc()
         db.mark_failed(analysis_id, f"{type(e).__name__}: {e}")
 

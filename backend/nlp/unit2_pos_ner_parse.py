@@ -89,7 +89,10 @@ def add_host_patterns(hosts):
     """Let the pipeline teach the ruler the host names seen in an uploaded file (gazetteer)."""
     ruler = get_nlp().get_pipe("entity_ruler")
     known = {p["pattern"][0].get("LOWER") for p in ruler.patterns if p["label"] == "HOST" and len(p["pattern"]) == 1}
-    new = [h for h in {str(h).lower() for h in hosts if h} if h not in known and " " not in h]
+    # IP addresses are never learnt as HOST names (a sensor's IP used as hostname would otherwise turn
+    # that IP into a HOST entity in every later text); the IP pattern already labels them.
+    new = [h for h in {str(h).lower() for h in hosts if h}
+           if h not in known and " " not in h and not re.fullmatch(IP_RE, h)]
     if new:
         ruler.add_patterns([{"label": "HOST", "pattern": [{"LOWER": h}]} for h in new])
 

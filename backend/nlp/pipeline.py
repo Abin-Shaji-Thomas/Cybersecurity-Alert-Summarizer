@@ -73,6 +73,8 @@ def run_pipeline(df, log=print):
     for a in df.to_dict("records"):
         if a["_key"] in parsed:
             ents, tri = parsed[a["_key"]]
+            # MITRE ids are a structured field, not part of the sentence: add them for parsed alerts too
+            ents = ents + [e for e in _fallback_entities(a) if e["label"] == "MITRE_TECHNIQUE"]
         else:
             ents = _fallback_entities(a)
             tri = {"actor": a["src_ip"] or a["user"], "action": a["description"].lower(), "action_head": None,

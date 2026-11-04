@@ -81,7 +81,10 @@ MAPS_TO). Each alert becomes a time-stamped event for the timeline.
 Each alert gets an attack phase, from the AIT-ADS labels.csv time windows or otherwise from MITRE tactic rules. Incidents get
 TimeBank-style BEFORE/OVERLAPS links. Template filling is the main summary: slots (what happened, attacker, targets, time
 window, phases, severity, MITRE, rarest alert, recommended action) are filled from the incident's alerts and rendered as 3–5
-sentences. Aspect analysis adds frequency (one-off / repeated / ongoing) and outcome (attempted / succeeded) to each incident. The baselines are the sentences closest to the TF-IDF centroid (extractive) and distilbart-cnn-6-6 on CPU (abstractive,
+sentences. Aspect analysis adds frequency (one-off / repeated / ongoing) and outcome (attempted / succeeded) to each incident.
+A success only counts if it belongs to the attack (from the attacker's IP, or a local sudo/PAM event on a host the
+attacker hit), and the recommended action is chosen from the incident's most severe alerts, so a routine alert in
+the same incident (e.g. a ClamAV update) cannot change the advice. The baselines are the sentences closest to the TF-IDF centroid (extractive) and distilbart-cnn-6-6 on CPU (abstractive,
 on demand). Rule-based SRL maps triples to Agent / Action / Patient / Time / Location. The Q&A chatbot detects the
 intent with rules, answers from the extracted facts and shows TF-IDF-retrieved supporting alerts. SRL's Action is the verb of
 the triple, or "trigger" if the alert has no action word.

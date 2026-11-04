@@ -1,4 +1,5 @@
 """/api/lab/process - run ONE pasted alert/sentence through every Learning Unit (viva demo)."""
+import re
 from functools import lru_cache
 from pathlib import Path
 
@@ -73,8 +74,9 @@ def process(body: LabInput):
     doc = u2.get_nlp()(text)
     triple = u3.extract_triple(doc)
     import pandas as pd
+    quoted = re.search(r"'([^']+)'", text)          # the quoted alert description, if any
     alert_like = {"timestamp": pd.Timestamp.now(tz="UTC"), "dst_port": None, "url": None, "user": None,
-                  "host": triple.get("target"), "description": text}
+                  "host": triple.get("target"), "description": quoted.group(1) if quoted else text}
     for e in doc.ents:
         if e.label_ == "PORT":
             alert_like["dst_port"] = e.text

@@ -92,7 +92,7 @@ kept as is. After deduplication the app sees 1,467 alerts.
 
 ## Test samples
 
-`test_samples/` holds four small upload files cut from **shaw** (29 Jan 2022) by `backend/scripts/make_test_samples.py`:
-login brute force on the mail server, wpscan/dirb web scanning, DNS + malformed TLS traffic, and the full attack chain, plus
-a non-JSON file for the error handling. AIT-ADS contains no SSH brute force; the brute-force example is the real
-PAM/Dovecot password guessing by 10.70.34.215. See `test_samples/README.md`.
+`test_samples/` is built by `backend/scripts/make_test_samples.py`. The real files are time windows from **russellmitchell**
+and **shaw**: web reconnaissance, suspicious DNS/TLS, the full shaw attack chain, and a low-severity normal morning.
+AIT-ADS contains no SSH login failures and no CVE alerts. Those stories are `synthetic_` files whose alerts are copies of
+real AIT-ADS alerts with only values changed. See `test_samples/README.md`.

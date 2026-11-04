@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-11-04 19:33",
- "seconds": 138.5,
+ "generated_at": "2026-11-04 20:21",
+ "seconds": 177.7,
  "scenarios": {
   "russellmitchell": {
    "n_alerts": 21354,
    "n_alert_types": 33,
    "n_incidents": 214,
    "n_high_or_critical": 61,
-   "seconds": 27.5,
+   "seconds": 37.3,
    "lm": {
     "n_train_sentences": 126,
     "n_test_sentences": 31,
@@ -370,7 +370,7 @@
    "n_alert_types": 36,
    "n_incidents": 444,
    "n_high_or_critical": 124,
-   "seconds": 30.4,
+   "seconds": 40.4,
    "lm": {
     "n_train_sentences": 88,
     "n_test_sentences": 21,
@@ -650,9 +650,9 @@
   "n_matched": 25,
   "mean_f1": {
    "template": {
-    "rouge1": 0.4681,
-    "rouge2": 0.182,
-    "rougeL": 0.3131
+    "rouge1": 0.463,
+    "rouge2": 0.1804,
+    "rougeL": 0.3095
    },
    "extractive": {
     "rouge1": 0.3293,
@@ -789,15 +789,15 @@
     "matched": true,
     "reference": "At 04:37 to 04:38 UTC on 24 Jan 2022, on intranet-server, user jhall ran sudo to root, changed UID to root and opened root login sessions. This is privilege escalation (MITRE T1548.003) shortly after the web attack. Treat it as critical: verify the jhall account, review the commands run as root and reset its credentials.",
     "outputs": {
-     "template": "From 2022-01-24 04:37:40 to 05:03:11 UTC (25 min 31 s), intranet-server, vpn (ports 80) raised 7 alerts, mainly 'PAM: Login session opened' (2), plus Successful sudo to ROOT executed (2), User successfully changed UID (1). The activity came from 172.19.131.174 (1 alert). Severity is Critical (max Wazuh level 10; MITRE T1078, T1548.003 - Defense Evasion, Persistence, Privilege Escalation, Initial Access) in attack phase(s) privilege_escalation, normal. Aspects: repeated activity; it succeeded (5 success alert(s), e.g. 'User successfully changed UID'). Recommended action: Verify the sudo/root activity with the account owner, review commands run, and reset credentials if it was not authorised.",
+     "template": "From 2022-01-24 04:37:40 to 05:03:11 UTC (25 min 31 s), intranet-server, vpn (ports 80) raised 7 alerts, mainly 'PAM: Login session opened' (2), plus Successful sudo to ROOT executed (2), User successfully changed UID (1). The activity came from 172.19.131.174 (1 alert). Severity is Critical (max Wazuh level 10; MITRE T1078, T1548.003 - Defense Evasion, Persistence, Privilege Escalation, Initial Access) in attack phase(s) privilege_escalation, normal. Aspects: repeated activity; it was only attempted (no alert reports a success). Recommended action: Review the alerts and confirm whether the activity is expected.",
      "extractive": "At 04:37:40, host intranet-server reported 'PAM: Login session opened' for user jhall (level 3). At 04:37:58, host intranet-server reported 'Successful sudo to ROOT executed' for user root (level 3). At 04:38:06, host intranet-server reported 'PAM: Login session closed' for user root (level 3).",
      "abstractive": "At 04:37:58, host intranet-server reported 'Successful sudo to ROOT executed' for user root . At 04:38:06, host vpn reported 'Multiple IDS alerts for same id' from 172.19.131.174 targeting port 80 ."
     },
     "scores": {
      "template": {
-      "rouge1": 0.4393,
-      "rouge2": 0.1287,
-      "rougeL": 0.3006
+      "rouge1": 0.3875,
+      "rouge2": 0.1139,
+      "rougeL": 0.25
      },
      "extractive": {
       "rouge1": 0.3063,
@@ -905,15 +905,15 @@
     "matched": true,
     "reference": "On 22 Jan 2022 between 10:06 and 11:04 UTC, inet-firewall and vpn reported 16 alerts: repeated IDS hits on port 443 and DNS queries to a .cloud domain from 192.168.230.4 and 172.19.131.174. No attack phase was active. Check the .cloud DNS lookups and tune the repeated signatures.",
     "outputs": {
-     "template": "From 2022-01-22 10:06:51 to 11:04:51 UTC (57 min 59 s), inet-firewall, vpn (ports 443, 53) raised 16 alerts, mainly 'Multiple IDS alerts for same id' (8), plus Suricata: Alert - ET INFO Observed DNS Query to .cloud TLD (4), Multiple IDS events from same source ip (3). The activity came from 192.168.230.4 (10 alerts), 172.19.131.174 (6 alerts). Severity is Critical (max Wazuh level 11). Aspects: ongoing activity; it was only attempted (no alert reports a success). Recommended action: Check DNS logs for long or high-volume queries (possible DNS tunnelling / exfiltration) and block the destination.",
+     "template": "From 2022-01-22 10:06:51 to 11:04:51 UTC (57 min 59 s), inet-firewall, vpn (ports 443, 53) raised 16 alerts, mainly 'Multiple IDS alerts for same id' (8), plus Suricata: Alert - ET INFO Observed DNS Query to .cloud TLD (4), Multiple IDS events from same source ip (3). The activity came from 192.168.230.4 (10 alerts), 172.19.131.174 (6 alerts). Severity is Critical (max Wazuh level 11). Aspects: ongoing activity; it was only attempted (no alert reports a success). Recommended action: Review the alerts and confirm whether the activity is expected.",
      "extractive": "At 10:06:51, host inet-firewall reported 'Multiple IDS alerts for same id' from 192.168.230.4 targeting port 443 (level 10). At 10:24:15, host inet-firewall reported 'Multiple IDS events from same source ip' from 192.168.230.4 targeting port 443 (level 10). At 10:57:07, host vpn reported 'Multiple IDS alerts for same id (ignoring now this id)' from 172.19.131.174 targeting port 443 (level 11).",
      "abstractive": "At 10:06:51, host inet-firewall reported 'Multiple IDS alerts for same id' from 192.168.230.4 targeting port 443 (level 10) At 10:24:15, host vpn reported 'multiple IDS events from same source ip' from192.168 ."
     },
     "scores": {
      "template": {
-      "rouge1": 0.4663,
-      "rouge2": 0.1739,
-      "rougeL": 0.3681
+      "rouge1": 0.4615,
+      "rouge2": 0.1818,
+      "rougeL": 0.3718
      },
      "extractive": {
       "rouge1": 0.303,
@@ -934,14 +934,14 @@
     "matched": true,
     "reference": "From 06:42 to 18:17 UTC on 24 Jan 2022 the mail servers mail, davey-mail and morris-mail logged 973 successful Dovecot logins by regular users such as matthew.begum and andrea.moss, plus 20 invalid user login attempts and 5 Dovecot brute force alerts. Most of this is normal mail use, but the failures should be checked. Review the brute force alerts and the accounts involved.",
     "outputs": {
-     "template": "From 2022-01-24 06:42:39 to 18:17:52 UTC (11 h 35 min), mail, davey-mail, morris-mail raised 1004 alerts, mainly 'Dovecot Authentication Success' (973), plus Dovecot Invalid User Login Attempt (20), Dovecot brute force attack (multiple auth failures) (5). The activity came from 172.19.130.4 (28 alerts). Severity is Critical (max Wazuh level 10; MITRE T1078, T1110, T1110.001 - Defense Evasion, Persistence, Privilege Escalation, Initial Access and 1 more) in attack phase(s) dnsteal, normal. Aspects: ongoing activity; it succeeded (973 success alert(s), e.g. 'Dovecot Authentication Success'). The most unusual alert was 'syslog: User authentication failure'. Recommended action: Block the source IP, enforce account lockout and MFA, and check for any successful logins after the failures.",
+     "template": "From 2022-01-24 06:42:39 to 18:17:52 UTC (11 h 35 min), mail, davey-mail, morris-mail raised 1004 alerts, mainly 'Dovecot Authentication Success' (973), plus Dovecot Invalid User Login Attempt (20), Dovecot brute force attack (multiple auth failures) (5). The activity came from 172.19.130.4 (28 alerts). Severity is Critical (max Wazuh level 10; MITRE T1078, T1110, T1110.001 - Defense Evasion, Persistence, Privilege Escalation, Initial Access and 1 more) in attack phase(s) dnsteal, normal. Aspects: ongoing activity; it succeeded (484 success alert(s), e.g. 'Dovecot Authentication Success'). The most unusual alert was 'syslog: User authentication failure'. Recommended action: Block the source IP, enforce account lockout and MFA, and check for any successful logins after the failures.",
      "extractive": "At 09:51:26, host mail reported 'Dovecot Invalid User Login Attempt' for user alyssa.hayes from 172.19.130.4 (level 5). At 16:22:57, host mail reported 'syslog: User authentication failure' (level 5). At 17:59:09, host mail reported 'Dovecot Authentication Success' for user traci.stevenson (level 3).",
      "abstractive": "Host mail reported 'Dovecot brute force attack (multiple auth failures)' for user alyssa.hayes from 172.19.130.4 (level 10.4) At 16:22:54, host mail reported \u2018PAM: User login failed\u2019 for user toby.white from 172"
     },
     "scores": {
      "template": {
       "rouge1": 0.4536,
-      "rouge2": 0.1354,
+      "rouge2": 0.125,
       "rougeL": 0.299
      },
      "extractive": {
@@ -1079,15 +1079,15 @@
     "matched": true,
     "reference": "Between 14:38 and 14:45 UTC on 29 Jan 2022, 172.24.249.224 generated 4798 HTTP 400 errors on intranet-server port 80 plus suspicious URL access and common web attack alerts. This is directory brute forcing and WordPress scanning (dirb, wpscan) that reached exploitation attempts. Treat it as critical: block the IP and inspect the web application for uploaded files.",
     "outputs": {
-     "template": "From 2022-01-29 14:38:52 to 14:45:39 UTC (6 min 47 s), intranet-server, 10.38.242.230, 10.38.243.24 (ports 80) raised 4814 alerts, mainly 'Web server 400 error code' (4798), plus Suspicious URL access (12), Web server 500 error code (Internal Error) (2). The activity came from 172.24.249.224 (4813 alerts), 172.24.251.86 (1 alert). Severity is Critical (max Wazuh level 6; MITRE T1055, T1083, T1190 - Defense Evasion, Privilege Escalation, Discovery, Initial Access) in attack phase(s) wpscan, dirb, cracking. Aspects: repeated activity; it was only attempted (no alert reports a success). The most unusual alert was 'Common web attack'. Recommended action: Block or rate-limit the scanning IP at the firewall/WAF and check the web server for exposed or vulnerable paths (directory brute-forcing / WordPress scanning).",
+     "template": "From 2022-01-29 14:38:52 to 14:45:39 UTC (6 min 47 s), intranet-server, 10.38.242.230, 10.38.243.24 (ports 80) raised 4814 alerts, mainly 'Web server 400 error code' (4798), plus Suspicious URL access (12), Web server 500 error code (Internal Error) (2). The activity came from 172.24.249.224 (4813 alerts), 172.24.251.86 (1 alert). Severity is Critical (max Wazuh level 6; MITRE T1055, T1083, T1190 - Defense Evasion, Privilege Escalation, Discovery, Initial Access) in attack phase(s) wpscan, dirb, cracking. Aspects: repeated activity; it was only attempted (no alert reports a success). The most unusual alert was 'Common web attack'. Recommended action: Inspect the requested URLs for injection payloads, patch the web application, and block the source at the WAF.",
      "extractive": "At 14:38:56, host intranet-server reported 'Web server 500 error code (Internal Error)' from 172.24.249.224 targeting port 80 requesting /wp-content/themes/go/ (level 5). At 14:39:14, host intranet-server reported 'Common web attack' from 172.24.249.224 targeting port 80 requesting /_mem_bin (level 6). At 14:39:26, host intranet-server reported 'Web server 400 error code' from 172.24.249.224 targeting port 80 requesting /ws (level 5).",
      "abstractive": "At 14:38:56, host intranet-server reported 'Web server 500 error code (Internal Error)' from 172.24.24 . At 14:39:14, hostintranet server reported 'Common web attack' from 172 .24."
     },
     "scores": {
      "template": {
-      "rouge1": 0.4335,
-      "rouge2": 0.1692,
-      "rougeL": 0.2463
+      "rouge1": 0.4103,
+      "rouge2": 0.1762,
+      "rougeL": 0.2359
      },
      "extractive": {
       "rouge1": 0.2394,
@@ -1195,15 +1195,15 @@
     "matched": true,
     "reference": "At 15:20 to 15:21 UTC on 29 Jan 2022, user gmarsh on intranet-server ran sudo for the first time, switched to root and opened root sessions (MITRE T1548.003). This is the privilege escalation step of the attack. Verify the activity of gmarsh, review the root commands and reset the account credentials.",
     "outputs": {
-     "template": "From 2022-01-29 15:20:51 to 15:21:09 UTC (18 s), intranet-server raised 9 alerts, mainly 'PAM: Login session opened' (3), plus Successful sudo to ROOT executed (2), PAM: Login session closed (2). The activity came from user root, user gmarsh. Severity is Medium (max Wazuh level 4; MITRE T1078, T1548.003 - Defense Evasion, Persistence, Privilege Escalation, Initial Access) in attack phase(s) privilege_escalation. Aspects: repeated activity; it succeeded (7 success alert(s), e.g. 'User successfully changed UID'). The most unusual alert was 'First time user executed sudo'. Recommended action: Verify the sudo/root activity with the account owner, review commands run, and reset credentials if it was not authorised.",
+     "template": "From 2022-01-29 15:20:51 to 15:21:09 UTC (18 s), intranet-server raised 9 alerts, mainly 'PAM: Login session opened' (3), plus Successful sudo to ROOT executed (2), PAM: Login session closed (2). The activity came from user root, user gmarsh. Severity is Medium (max Wazuh level 4; MITRE T1078, T1548.003 - Defense Evasion, Persistence, Privilege Escalation, Initial Access) in attack phase(s) privilege_escalation. Aspects: repeated activity; it succeeded (7 success alert(s), e.g. 'User successfully changed UID'). The most unusual alert was 'First time user executed sudo'. Recommended action: Review privileged activity on the host and contain it if unauthorised.",
      "extractive": "At 15:20:51, host intranet-server reported 'PAM: Login session opened' for user gmarsh (level 3). At 15:21:04, host intranet-server reported 'Successful sudo to ROOT executed' for user root (level 3). At 15:21:05, host intranet-server reported 'PAM: Login session closed' for user root (level 3).",
      "abstractive": "At 15:20:51, host intranet-server reported 'User successfully changed UID' for user gmarsh (level 3) At 15:21:02, host Intranet server reported 'First time user executed sudo' foruser root (level 4) At15:21,04, hostintranet"
     },
     "scores": {
      "template": {
-      "rouge1": 0.4678,
-      "rouge2": 0.1538,
-      "rougeL": 0.3041
+      "rouge1": 0.4198,
+      "rouge2": 0.125,
+      "rougeL": 0.2716
      },
      "extractive": {
       "rouge1": 0.3178,
@@ -1394,7 +1394,7 @@
   ],
   "abstractive_model": "sshleifer/distilbart-cnn-6-6",
   "abstractive_error": null,
-  "abstractive_seconds_per_summary": 2.73
+  "abstractive_seconds_per_summary": 3.31
  },
  "ner": {
   "n_sentences": 50,

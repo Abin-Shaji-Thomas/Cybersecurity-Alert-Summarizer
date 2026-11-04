@@ -244,7 +244,7 @@ def extract_relations(alert, entities, triple):
     host = alert.get("host")
     port = alert.get("dst_port")
     rels = []
-    if actor and actor in ips and host and (alert["level"] >= 5 or alert["source"] == "suricata"):
+    if actor and actor in ips and host and actor != host and (alert["level"] >= 5 or alert["source"] == "suricata"):
         rels.append((actor, "ATTACKED", host))
     if actor and actor in ips and port and any(w in desc for w in SCAN_WORDS):
         rels.append((actor, "SCANNED", f"port {port}"))
@@ -256,7 +256,7 @@ def extract_relations(alert, entities, triple):
     if alert.get("mitre_id"):
         for m in str(alert["mitre_id"]).split(","):
             rels.append((alert["description"][:80], "MAPS_TO", m))
-    return rels
+    return [r for r in rels if r[0] != r[2]]      # no self-loops (e.g. root ESCALATED_TO root)
 
 
 # ---------------------------------------------------------------- 6. events & time

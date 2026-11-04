@@ -120,6 +120,7 @@ def srl_roles(triple, alert):
 ACTIONS = [
     ("sudo to root", "Verify the sudo/root activity with the account owner, review commands run, and reset credentials if it was not authorised."),
     ("changed uid", "Verify the privilege change, review commands run as root, and reset credentials if it was not authorised."),
+    ("exploit", "Patch the software named in the alert (see the CVE), block the source IP and check the host for signs of compromise."),
     ("brute force", "Block the source IP, enforce account lockout and MFA, and check for any successful logins after the failures."),
     ("authentication fail", "Check whether the failures are followed by a success; block the source and enforce lockout if it is guessing passwords."),
     ("invalid user", "Block the source IP and check for successful logins from it; disable unused accounts."),
@@ -138,10 +139,13 @@ TACTIC_ACTIONS = {
     "Credential Access": "Reset affected credentials and enforce MFA.",
     "Reconnaissance": "Block the scanning source and reduce the exposed attack surface.",
     "Lateral Movement": "Isolate the affected hosts and review remote logins.",
+    "Initial Access": "Patch the exposed service, block the source and check the host for signs of compromise.",
 }
 
 
 def recommend_action(descriptions, tactics):
+    """descriptions / tactics come from the incident's MOST SEVERE alerts, so a routine alert that happens to sit
+    in the same incident (e.g. a ClamAV update) cannot decide the advice for an attack."""
     text = " ".join(descriptions).lower()
     for key, action in ACTIONS:
         if key in text:
@@ -203,17 +207,30 @@ def _duration(sec):
 # ---------------------------------------------------------------- aspect analysis
 # Two ASPECTS of every incident, decided by simple rules:
 #   frequency: one-off (1-2 alerts) / repeated (several alerts within 30 min) / ongoing (spans >= 30 min)
-#   outcome  : succeeded if any alert reports a success (login accepted, sudo executed, session opened...),
-#              otherwise attempted (only failures, scans, errors or IDS detections).
+#   outcome  : succeeded if a success alert (login accepted, sudo executed, session opened...) belongs to the
+#              activity (see attacker_successes), otherwise attempted (only failures, scans, errors, IDS
+#              detections or unrelated logins).
 SUCCESS_WORDS = ("success", "accepted", "session opened", "executed", "changed uid", "logged in")
+
+
+def attacker_successes(g):
+    """Success alerts that belong to the attack. The 'attackers' are the source IPs of suspicious alerts
+    (level >= 5). A success counts if it comes from one of them, or if it is a local event without a source IP
+    (sudo, PAM session) on a host they attacked. With no suspicious source at all, every success counts."""
+    success = g[g["description"].str.lower().apply(lambda d: any(w in d for w in SUCCESS_WORDS)).values]
+    bad = g[(g["level"] >= 5).values & g["src_ip"].notna().values] if "src_ip" in g else g.iloc[0:0]
+    if bad.empty:
+        return success
+    keep = success["src_ip"].isin(set(bad["src_ip"])) | (success["src_ip"].isna() & success["host"].isin(set(bad["host"])))
+    return success[keep.values]
 
 
 def incident_aspects(g):
     n = len(g)
     span = (g["timestamp"].max() - g["timestamp"].min()).total_seconds()
     frequency = "one-off" if n <= 2 else "ongoing" if span >= 30 * 60 else "repeated"
-    descs = g["description"].str.lower()
-    hits = g.loc[descs.apply(lambda d: any(w in d for w in SUCCESS_WORDS)), "description"]
+    hits = attacker_successes(g)["description"] if {"src_ip", "host", "level"} <= set(g.columns) else \
+        g.loc[g["description"].str.lower().apply(lambda d: any(w in d for w in SUCCESS_WORDS)).values, "description"]
     outcome = "succeeded" if len(hits) else "attempted"
     evidence = (f"{len(hits)} success alert(s), e.g. '{hits.iloc[0]}'" if len(hits)
                 else "no alert reports a success")
@@ -257,7 +274,10 @@ def fill_template(g, keywords, severity, max_level):
         "mitre_tactics": _fmt_list(tactics, 4),
         "top_rare_alerts": [r["description"] for _, r in rare.iterrows()],
         "keywords": keywords,
-        "recommended_action": recommend_action(list(types.index[:5]), tactics),
+        "recommended_action": recommend_action(
+            list(g.loc[g["level"] == g["level"].max(), "description"].value_counts().index[:5]),
+            list(dict.fromkeys(t for ts in g.loc[g["level"] == g["level"].max(), "mitre_tactic"].dropna()
+                               for t in str(ts).split(",")))),
         **incident_aspects(g),
     }
 
@@ -382,11 +402,14 @@ def answer_question(question, alerts, relations, incidents, vec_cache=None):
     support_df = sub
 
     def top(series, n=8):
-        vc = series.dropna().value_counts().head(n)
-        return ", ".join(f"{k} ({v})" for k, v in vc.items())
+        vc = series.dropna().value_counts()
+        more = f" and {len(vc) - n} more" if len(vc) > n else ""
+        return ", ".join(f"{k} ({v})" for k, v in vc.head(n).items()) + more
 
+    asks_for_ip = re.search(r"\b(which|what) ips?\b|\bwho\b|\bsource ips?\b|\battacker'?s? ips?\b", q)
     intent = "search"
-    if re.search(r"\bhosts?\b|\bmachines?\b|\bservers?\b|\bsystems?\b", q) and ("attack" in q or "target" in q or ips or "which" in q):
+    if (re.search(r"\bhosts?\b|\bmachines?\b|\bservers?\b|\bsystems?\b", q) and not asks_for_ip
+            and ("attack" in q or "target" in q or ips or "which" in q)):
         intent = "hosts"
         if ips:
             hosts = [r["object"] for r in relations if r["subject"] in ips and r["relation"] == "ATTACKED"]
@@ -397,6 +420,23 @@ def answer_question(question, alerts, relations, incidents, vec_cache=None):
     elif re.search(r"\bports?\b", q):
         intent = "ports"
         ans = "Targeted ports: " + (top(sub["dst_port"].dropna().astype(int)) or "none recorded") + "."
+    elif re.search(r"succe|log(ged)? ?in\b|get in|break in|compromis", q):
+        intent = "success"
+        ok = attacker_successes(sub)            # same rule as the incident aspect "succeeded"
+        no_attacker = not ((sub["level"] >= 5) & sub["src_ip"].notna()).any()
+        if no_attacker:
+            ans = ("There is no suspicious source (no alert of level >= 5 with a source IP), so no attacker. "
+                   f"{len(ok)} success alert(s) are normal activity" + (f", e.g. '{ok.iloc[0]['description']}'." if len(ok) else "."))
+            support_df = ok if len(ok) else sub
+        elif len(ok):
+            first = ok.sort_values("timestamp").iloc[0]
+            ans = (f"Yes: {len(ok)} success alert(s) from the suspicious source(s); the first at "
+                   f"{first['timestamp']:%Y-%m-%d %H:%M:%S} UTC: '{first['description']}'"
+                   + (f" from {first['src_ip']}" if first["src_ip"] else "")
+                   + (f" for user {first['user']}" if first["user"] else "") + f" on {first['host']}.")
+            support_df = ok
+        else:
+            ans = "No: no alert from the suspicious source(s) reports a successful login, session or command."
     elif re.search(r"\bip|attacker|source|who\b", q):
         intent = "ips"
         att = alerts[alerts["level"] >= 5]
