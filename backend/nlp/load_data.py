@@ -92,6 +92,9 @@ def flatten_alert(a):
         m = USER_IN_LOG.search(full_log)
         if m:
             user = next(g for g in m.groups() if g)
+    if user:
+        # "<michael.sutton>" -> "michael.sutton", "www-data:jhall" -> "jhall"
+        user = str(user).strip("<>'\"").split(":")[-1] or None
 
     url = data.get("url") or (data.get("http") or {}).get("url")
     try:
