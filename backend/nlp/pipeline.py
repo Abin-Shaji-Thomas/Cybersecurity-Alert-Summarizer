@@ -140,7 +140,12 @@ def run_pipeline(df, log=print):
 
     # SRL roles for each alert are computed on demand in the API (cheap); store triples per alert
     df["triple_actor"] = [tr.get("actor") for tr in triples]
-    df["triple_action"] = [tr.get("action") for tr in triples]
+    # action verb (Unit III); alerts beyond the spaCy cap reuse the verb found for the same description
+    verb_of_desc = {}
+    for d, tr in zip(df["description"], triples):
+        if tr.get("action_head"):
+            verb_of_desc.setdefault(d, tr["action_head"])
+    df["triple_action"] = [tr.get("action_head") or verb_of_desc.get(d) for d, tr in zip(df["description"], triples)]
     df["triple_target"] = [tr.get("target") for tr in triples]
 
     sev_counts = Counter(i["severity"] for i in incidents)

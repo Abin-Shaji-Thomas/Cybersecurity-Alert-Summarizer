@@ -22,7 +22,8 @@ app = FastAPI(title="Cybersecurity Alert Summarizer", version="1.0", lifespan=li
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:4173"],
+    # the Vite dev server (any local port, in case 5173 is busy and Vite picks the next one)
+    allow_origin_regex=r"http://(localhost|127\.0\.0\.1):\d+",
     allow_methods=["*"],
     allow_headers=["*"],
 )

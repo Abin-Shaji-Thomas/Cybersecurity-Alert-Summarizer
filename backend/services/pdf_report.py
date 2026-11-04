@@ -51,7 +51,7 @@ def build_pdf(inc, alerts, entities):
     out += [Paragraph("Recommended action", ss["Heading2"]), _p(inc["recommended_action"], body),
             Paragraph("Filled template slots", ss["Heading2"])]
     slot_rows = [["Slot", "Value"]]
-    for key in ["what_happened", "attacker", "users", "targets", "time_window", "phases", "severity",
+    for key in ["what_happened", "attacker", "users", "targets", "time_window", "phases", "severity", "frequency", "outcome",
                 "mitre_techniques", "mitre_tactics", "keywords", "top_rare_alerts"]:
         v = s.get(key)
         if isinstance(v, list):

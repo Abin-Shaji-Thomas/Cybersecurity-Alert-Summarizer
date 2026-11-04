@@ -158,6 +158,9 @@ def to_dataframe(raw_alerts):
     # pandas uses NaN for missing values; turn them into None so "if value:" works
     df["dst_port"] = df["dst_port"].astype("Int64")
     df = df.astype(object).where(df.notna(), None)
+    # astype(object) above also turned the timestamps into plain objects; make them datetimes again
+    # (otherwise time arithmetic like .diff().dt fails on files that mix second / microsecond precision)
+    df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True)
 
     df["sentence"] = df.apply(alert_to_sentence, axis=1)
     return df

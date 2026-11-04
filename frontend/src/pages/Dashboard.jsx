@@ -42,7 +42,13 @@ export default function Dashboard() {
 
   const onFiles = (files) => {
     const f = files?.[0]
-    if (f) start(() => api.uploadFile(f))
+    if (!f) return
+    // check the type here first (the backend checks again) so a wrong file never gets uploaded
+    if (!/\.(json|jsonl|ndjson)$/i.test(f.name)) {
+      setError(`Unsupported file type '${f.name.split('.').pop()}'. Upload a Wazuh/Suricata .json or .jsonl file.`)
+      return
+    }
+    start(() => api.uploadFile(f))
   }
 
   const remove = (id) => start(() => api.deleteAnalysis(id))

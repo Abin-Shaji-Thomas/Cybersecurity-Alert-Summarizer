@@ -4,7 +4,8 @@ Parsing background (explained, not re-implemented):
   * spaCy's parser is TRANSITION-BASED: it reads words left to right with a stack and a buffer and a
     neural network picks actions (SHIFT, LEFT-ARC, RIGHT-ARC) - fast, linear time, greedy.
   * GRAPH-BASED parsers instead score every possible head->dependent arc and pick the maximum
-    spanning tree (e.g. Chu-Liu/Edmonds) - slower but look at the whole sentence at once.
+    spanning tree (Chu-Liu/Edmonds, implemented below as a toy demo) - slower but look at the whole
+    sentence at once.
   * NEURAL CONSTITUENCY parsing (e.g. Kitaev & Klein) encodes the sentence with a neural network and
     scores labelled spans (phrases like NP/VP), then a CKY-style search builds the best phrase tree.
     We only show constituency parsing with the toy CKY in Unit II (documentation only for the neural one).
@@ -17,6 +18,8 @@ Techniques implemented here:
   4. Lexical semantics: WordNet synonyms + hypernyms to normalise action words (attempted -> try).
   5. Vector semantics: word vectors = rows of a word-context co-occurrence matrix built from our own
      alert corpus; cosine similarity gives nearest neighbours.
+  6. Graph-based parsing: our own Chu-Liu/Edmonds maximum spanning tree on one toy sentence with
+     hand-picked arc scores (concept demo, compared with spaCy's transition-based parse).
 """
 import re
 from collections import Counter
@@ -72,10 +75,12 @@ def _find_pobj(doc, prep_word):
     return None
 
 
-# Nouns that describe the OUTCOME or the report itself, not the action ("authentication success",
-# "400 error code", "IDS event"). For these we look at the modifiers for the real action word.
+# Nouns that are NOT actions, so they are skipped when looking for the action word:
+#  * the OUTCOME or the report itself ("authentication success", "400 error code", "IDS event");
+#  * the THING or PLACE involved ("web server", "host", "port"): WordNet would turn "server" into "serve".
 OUTCOME_NOUNS = {"success", "failure", "error", "code", "event", "alert", "message", "len", "header",
-                 "record", "traffic", "reply", "id", "ip", "source", "index", "file", "directory"}
+                 "record", "traffic", "reply", "id", "ip", "source", "index", "file", "directory",
+                 "server", "web", "host", "port", "user", "database", "domain", "tld", "website"}
 
 
 @lru_cache(maxsize=4096)
@@ -246,6 +251,81 @@ QUERY_WORDS = ["ssh", "sshd", "scan", "login", "failed", "authentication", "erro
                "tls", "dovecot", "sudo", "user", "success", "attack"]
 
 
+# ---------------------------------------------------------------- 6. graph-based parsing (concept demo)
+# A graph-based parser scores EVERY possible head -> dependent arc and returns the maximum spanning tree.
+# Real parsers learn the scores with a neural network; here they are hand-picked for one toy sentence.
+MST_WORDS = ["ROOT", "attacker", "scanned", "the", "server"]
+MST_SCORES = {  # (head, dependent): score
+    (0, 2): 25, (0, 1): 5, (0, 4): 4, (0, 3): 1,
+    (2, 1): 20, (1, 2): 30,            # attacker <-> scanned: the greedy choice makes a CYCLE
+    (2, 4): 15, (4, 3): 12, (2, 3): 3, (1, 4): 3, (3, 4): 2, (4, 2): 2,
+    (1, 3): 2, (3, 1): 1, (4, 1): 4, (3, 2): 1,
+}
+
+
+def _find_cycle(head_of):
+    for start in head_of:
+        seen, v = [], start
+        while v in head_of and v not in seen:
+            seen.append(v)
+            v = head_of[v]
+        if v in seen:
+            return seen[seen.index(v):]
+    return None
+
+
+def chu_liu_edmonds(nodes, scores, root=0, steps=None):
+    """Maximum spanning tree (Chu-Liu/Edmonds).
+    1. every word picks its best-scoring head;
+    2. no cycle -> that is the tree;
+    3. a cycle -> contract it into one node, re-score arcs entering it
+       (score - score of the cycle arc it would replace), solve recursively, then expand."""
+    steps = [] if steps is None else steps
+    best = {d: max((h for h in nodes if (h, d) in scores), key=lambda h: scores[(h, d)])
+            for d in nodes if d != root}
+    cycle = _find_cycle(best)
+    steps.append({"best_heads": {d: h for d, h in best.items()}, "cycle": cycle})
+    if not cycle:
+        return best, steps
+    c = max(n for n in nodes if isinstance(n, int)) + 1 + len(steps) * 100   # id of the contracted node
+    new_scores, origin = {}, {}
+    for (h, d), s in scores.items():
+        if h in cycle and d in cycle:
+            continue
+        if d in cycle:                   # arc entering the cycle: replaces the cycle arc into d
+            key, val = (h, c), s - scores[(best[d], d)]
+        elif h in cycle:                 # arc leaving the cycle
+            key, val = (c, d), s
+        else:
+            key, val = (h, d), s
+        if key not in new_scores or val > new_scores[key]:
+            new_scores[key], origin[key] = val, (h, d)
+    sub, steps = chu_liu_edmonds([n for n in nodes if n not in cycle] + [c], new_scores, root, steps)
+    tree = {}
+    for d, h in sub.items():
+        oh, od = origin[(h, d)]
+        tree[od] = oh
+    for v in cycle:                      # keep the remaining cycle arcs
+        tree.setdefault(v, best[v])
+    return tree, steps
+
+
+def mst_demo():
+    """Graph-based parse of the toy sentence, plus spaCy's transition-based parse of the same words."""
+    tree, steps = chu_liu_edmonds(list(range(len(MST_WORDS))), MST_SCORES)
+    w = MST_WORDS
+    doc = get_nlp()(" ".join(w[1:]))
+    return {
+        "words": w,
+        "scores": [{"head": w[h], "dep": w[d], "score": s} for (h, d), s in sorted(MST_SCORES.items(), key=lambda x: -x[1])],
+        "greedy": [{"head": w[h], "dep": w[d]} for d, h in steps[0]["best_heads"].items()],
+        "cycle": [w[v] for v in (steps[0]["cycle"] or [])],
+        "tree": [{"head": w[h], "dep": w[d], "score": MST_SCORES[(h, d)]} for d, h in sorted(tree.items())],
+        "total_score": sum(MST_SCORES[(h, d)] for d, h in tree.items()),
+        "spacy": [{"head": "ROOT" if t.dep_ == "ROOT" else t.head.text, "dep": t.text, "label": t.dep_} for t in doc],
+    }
+
+
 # ---------------------------------------------------------------- NLP Lab demo
 def demo(text, vocab=None, M=None):
     doc = get_nlp()(text)
@@ -255,6 +335,7 @@ def demo(text, vocab=None, M=None):
         "noun_phrase_heads": noun_phrase_heads(doc),
         "triple": triple,
         "wordnet": [wordnet_info(v) for v in (verbs + ["attempt", "try"])[:6]],
+        "mst": mst_demo(),
     }
     if vocab is not None:
         words = [w for w in dict.fromkeys(tokenize(text)) if w in vocab and not w.startswith("<")][:4]

@@ -227,6 +227,32 @@ export default function NlpLab() {
               </Technique>
             </div>
           </div>
+          <Technique name="Graph-based dependency parsing: our Chu-Liu/Edmonds MST (concept demo)"
+            what="A graph-based parser scores every head → dependent arc and keeps the maximum spanning tree. Scores are hand-picked for this toy sentence; spaCy (transition-based) parses the same words for comparison.">
+            {(() => {
+              const m = res.unit3.mst
+              return (
+                <div className="grid grid-3">
+                  <div>
+                    <h3>1. Arc scores</h3>
+                    <div className="table-wrap" style={{ maxHeight: 220 }}><table><tbody>{m.scores.map((a, i) => <tr key={i}><td className="mono">{a.head} → {a.dep}</td><td className="num">{a.score}</td></tr>)}</tbody></table></div>
+                  </div>
+                  <div>
+                    <h3>2. Best head per word</h3>
+                    <table><tbody>{m.greedy.map((a, i) => <tr key={i}><td className="mono">{a.head} → {a.dep}</td></tr>)}</tbody></table>
+                    <p className="muted">{m.cycle.length ? `Cycle ${m.cycle.join(' ↔ ')} → contracted into one node and re-scored.` : 'No cycle.'}</p>
+                  </div>
+                  <div>
+                    <h3>3. Maximum spanning tree (score {m.total_score}) vs spaCy</h3>
+                    <table><thead><tr><th>MST</th><th>spaCy</th></tr></thead><tbody>{m.tree.map((a, i) => {
+                      const sp = m.spacy.find((x) => x.dep === a.dep)
+                      return <tr key={i}><td className="mono">{a.head} → {a.dep}</td><td className="mono">{sp ? `${sp.head} → ${sp.dep} (${sp.label})` : '–'}</td></tr>
+                    })}</tbody></table>
+                  </div>
+                </div>
+              )
+            })()}
+          </Technique>
         </div>
 
         <div className="grid grid-2">

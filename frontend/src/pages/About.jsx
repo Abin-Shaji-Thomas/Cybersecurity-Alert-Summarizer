@@ -9,7 +9,9 @@ const MAPPING = [
   ['II', 'Named entities / NER', 'spaCy + EntityRuler (IP, PORT, CVE, MITRE…)', 'Entities tab, Lab, Evaluation'],
   ['II', 'CFG + CKY parsing', 'CNF_GRAMMAR + own cky_parse', 'Lab (CKY table + tree)'],
   ['II', 'Dependency grammar', 'dependency_arcs', 'Lab'],
-  ['III', 'Transition / graph-based parsing, neural constituency parsing', 'spaCy parser; explained in comments', 'Documentation'],
+  ['III', 'Transition-based dependency parsing', 'spaCy parser (stack + buffer + neural classifier)', 'NLP Lab → Unit II arcs'],
+  ['III', 'Graph-based dependency parsing', 'chu_liu_edmonds (own MST, toy sentence)', 'NLP Lab → Unit III'],
+  ['III', 'Neural constituency parsing', 'explained in comments', 'Documentation only'],
   ['III', 'Heads & head-finding', 'np_head, noun_phrase_heads', 'Lab'],
   ['III', 'Evaluating parsers', 'evaluate_triples (P/R vs gold)', 'Evaluation'],
   ['III', 'Lexical semantics', 'wordnet_info (synonyms/hypernyms)', 'Lab'],
@@ -21,6 +23,7 @@ const MAPPING = [
   ['IV', 'Relation extraction', 'extract_relations (rules on NER + triples)', 'Entities & Relations graph'],
   ['IV', 'Events & time', 'to_event, timeline endpoint', 'Timeline tab'],
   ['V', 'Temporal analysis, TimeBank', 'assign_phases, temporal_links', 'Timeline, Lab'],
+  ['V', 'Aspect analysis', 'incident_aspects (one-off / repeated / ongoing, attempted / succeeded)', 'Incident detail badges + summary'],
   ['V', 'Template filling, SRL', 'fill_template, render_template, srl_roles', 'Incident detail (main summary)'],
   ['V', 'QA & IR, chatbots', 'answer_question, retrieve (TF-IDF)', 'Ask tab'],
   ['V', 'Summarisation (extractive / abstractive)', 'extractive_summary, abstractive_summary (distilbart)', 'Incident detail, Evaluation'],
@@ -62,6 +65,7 @@ export default function About() {
           </table>
         </div>
         <p className="muted">Full mapping with course outcomes: docs/UNIT_MAPPING.md.</p>
+        <p className="muted">Author: Abin Shaji Thomas (URK24CS6007), Karunya Institute of Technology and Sciences.</p>
       </div>
 
       <div className="card">

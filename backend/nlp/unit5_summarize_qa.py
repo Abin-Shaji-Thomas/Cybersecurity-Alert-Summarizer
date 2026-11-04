@@ -9,6 +9,7 @@ Techniques in this file:
   2. Rule-based Semantic Role Labelling: a triple becomes Agent / Action / Patient / Time / Location.
   3. TEMPLATE FILLING (main summary): fill slots {title, what happened, attacker, targets, time window,
      phases, severity, MITRE techniques, rare alerts, recommended action} and render 3-5 sentences.
+     ASPECT analysis adds two slots: frequency (one-off / repeated / ongoing) and outcome (attempted / succeeded).
   4. Extractive baseline: pick the alert sentences closest to the incident's TF-IDF centroid.
   5. Abstractive comparison: a small pretrained seq2seq summarizer (distilbart-cnn-6-6, CPU), loaded
      lazily and run only when the user clicks "Generate AI summary".
@@ -102,9 +103,12 @@ def temporal_links(incidents):
 
 # ---------------------------------------------------------------- 2. rule-based SRL
 def srl_roles(triple, alert):
+    """Action = the verb found by Unit III. If the description gave no usable verb (e.g. 'Multiple IDS
+    events from same source ip'), fall back to 'trigger': the agent's activity triggered the alert."""
+    verb = triple.get("action_head") or "trigger"
     return {
         "Agent": triple.get("actor") or "unknown source",
-        "Action": triple.get("action") or alert["description"],
+        "Action": f"{verb} ({alert['description'][:60]})",
         "Patient": (f"port {alert['dst_port']}" if alert.get("dst_port") else None) or alert.get("url") or alert.get("user"),
         "Time": alert["timestamp"].strftime("%Y-%m-%d %H:%M:%S UTC"),
         "Location": alert.get("host"),
@@ -196,6 +200,26 @@ def _duration(sec):
     return f"{sec // 3600} h {(sec % 3600) // 60} min"
 
 
+# ---------------------------------------------------------------- aspect analysis
+# Two ASPECTS of every incident, decided by simple rules:
+#   frequency: one-off (1-2 alerts) / repeated (several alerts within 30 min) / ongoing (spans >= 30 min)
+#   outcome  : succeeded if any alert reports a success (login accepted, sudo executed, session opened...),
+#              otherwise attempted (only failures, scans, errors or IDS detections).
+SUCCESS_WORDS = ("success", "accepted", "session opened", "executed", "changed uid", "logged in")
+
+
+def incident_aspects(g):
+    n = len(g)
+    span = (g["timestamp"].max() - g["timestamp"].min()).total_seconds()
+    frequency = "one-off" if n <= 2 else "ongoing" if span >= 30 * 60 else "repeated"
+    descs = g["description"].str.lower()
+    hits = g.loc[descs.apply(lambda d: any(w in d for w in SUCCESS_WORDS)), "description"]
+    outcome = "succeeded" if len(hits) else "attempted"
+    evidence = (f"{len(hits)} success alert(s), e.g. '{hits.iloc[0]}'" if len(hits)
+                else "no alert reports a success")
+    return {"frequency": frequency, "outcome": outcome, "outcome_evidence": evidence}
+
+
 def fill_template(g, keywords, severity, max_level):
     """Fill the slots for one incident (g = DataFrame of its alerts)."""
     types = g["description"].value_counts()
@@ -234,6 +258,7 @@ def fill_template(g, keywords, severity, max_level):
         "top_rare_alerts": [r["description"] for _, r in rare.iterrows()],
         "keywords": keywords,
         "recommended_action": recommend_action(list(types.index[:5]), tactics),
+        **incident_aspects(g),
     }
 
 
@@ -245,6 +270,9 @@ def render_template(s):
     phase_txt = f" in attack phase(s) {s['phases']}" if s["phases"] != "normal" else ""
     mitre_txt = f"; MITRE {s['mitre_techniques']} - {s['mitre_tactics']}" if s["mitre_techniques"] != "none" else ""
     parts.append(f"Severity is {s['severity']} (max Wazuh level {s['max_level']}{mitre_txt}){phase_txt}.")
+    if s.get("frequency"):
+        result = "it succeeded" if s["outcome"] == "succeeded" else "it was only attempted"
+        parts.append(f"Aspects: {s['frequency']} activity; {result} ({s['outcome_evidence']}).")
     if s["top_rare_alerts"] and s["top_rare_alerts"][0] not in s["what_happened"][:200]:
         parts.append(f"The most unusual alert was '{s['top_rare_alerts'][0]}'.")
     parts.append(f"Recommended action: {s['recommended_action']}")

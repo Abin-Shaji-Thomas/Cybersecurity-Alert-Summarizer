@@ -5,7 +5,7 @@ import { api, errorText } from '../api'
 import { ErrorBox, Loading, SeverityBadge } from '../components/Common'
 import { fmtTime, phaseGroup } from '../theme'
 
-const SLOT_ORDER = ['what_happened', 'attacker', 'users', 'targets', 'time_window', 'phases', 'severity',
+const SLOT_ORDER = ['what_happened', 'attacker', 'users', 'targets', 'time_window', 'phases', 'severity', 'frequency', 'outcome',
   'mitre_techniques', 'mitre_tactics', 'keywords', 'top_rare_alerts', 'recommended_action']
 
 export default function IncidentDetail() {
@@ -40,7 +40,10 @@ export default function IncidentDetail() {
         <div>
           <div className="muted"><Link to={`/analysis/${inc.analysis_id}`}>Analysis #{inc.analysis_id}</Link> / incident #{inc.id}</div>
           <h1>{inc.title}</h1>
-          <div className="row"><SeverityBadge severity={inc.severity} /><span className="subtle">{s.time_window} · {inc.n_alerts.toLocaleString()} alerts</span></div>
+          <div className="row"><SeverityBadge severity={inc.severity} />
+            {s.frequency && <span className="badge" title="Aspect: how often">{s.frequency}</span>}
+            {s.outcome && <span className="badge" title={`Aspect: outcome — ${s.outcome_evidence}`}>{s.outcome}</span>}
+            <span className="subtle">{s.time_window} · {inc.n_alerts.toLocaleString()} alerts</span></div>
         </div>
         <a className="btn btn-primary" href={api.pdfUrl(inc.id)} download>⬇ Download PDF</a>
       </div>

@@ -197,10 +197,26 @@ def get_hmm():
     return HMMTagger().fit(sents)
 
 
+def hmm_input(word):
+    """Mask alert-specific tokens before the HMM sees them (Unit I masking idea). The HMM was trained on
+    news text, so it has never seen an IP or a hostname: an IP becomes the treebank noun 'address', a
+    hyphenated name like 'intranet-server' becomes 'server', and a single quote becomes the treebank
+    quote token. spaCy still tags the original words."""
+    if re.fullmatch(r"(?:\d{1,3}\.){3}\d{1,3}(?::\d+)?", word):
+        return "address"
+    if word in ("'", '"'):
+        return "''"
+    if word in ("(", ")"):                    # the treebank writes brackets as -LRB- / -RRB-
+        return "-LRB-" if word == "(" else "-RRB-"
+    if "-" in word and word[0].isalpha() and not word.isupper():
+        return word.split("-")[-1]
+    return word
+
+
 def compare_taggers(doc):
-    """Tag the same tokens with our HMM and spaCy; return both and the agreement rate."""
+    """Tag the same tokens with our HMM (on masked words) and spaCy; return both and the agreement rate."""
     words = [t.text for t in doc if not t.is_space]
-    hmm_tags = get_hmm().viterbi(words)
+    hmm_tags = get_hmm().viterbi([hmm_input(w) for w in words])
     spacy_tags = [SPACY_TO_UNIVERSAL.get(t.pos_, t.pos_) for t in doc if not t.is_space]
     rows = [{"word": w, "hmm": h, "spacy": s, "agree": h == s} for w, h, s in zip(words, hmm_tags, spacy_tags)]
     agree = sum(r["agree"] for r in rows) / max(len(rows), 1)

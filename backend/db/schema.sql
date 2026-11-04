@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS alerts (
     cluster        INTEGER,                               -- TF-IDF KMeans cluster
     phase          TEXT,                                  -- attack phase (temporal analysis)
     triple_actor   TEXT,                                  -- dependency triple
-    triple_action  TEXT,
+    triple_action  TEXT,                                  -- action verb (WordNet-normalised)
     triple_target  TEXT
 );
 

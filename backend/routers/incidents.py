@@ -20,7 +20,7 @@ def _incident_or_404(incident_id):
 
 
 def _srl(a):
-    triple = {"actor": a["triple_actor"], "action": a["triple_action"]}
+    triple = {"actor": a["triple_actor"], "action_head": a["triple_action"]}   # triple_action = verb
     a = dict(a, timestamp=pd.Timestamp(a["timestamp"]))
     return u5.srl_roles(triple, a)
 

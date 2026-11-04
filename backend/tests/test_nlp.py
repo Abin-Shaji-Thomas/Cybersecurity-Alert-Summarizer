@@ -76,3 +76,30 @@ def test_triple_extraction():
 def test_wordnet_normalises_actions():
     assert u3.normalize_action("attempted") == u3.normalize_action("tried")
     assert u3.noun_to_verb("authentication") == "authenticate"
+
+
+def test_chu_liu_edmonds_breaks_cycle():
+    d = u3.mst_demo()
+    assert set(d["cycle"]) == {"attacker", "scanned"}                    # greedy heads form a cycle
+    tree = {(a["head"], a["dep"]) for a in d["tree"]}
+    assert tree == {("ROOT", "scanned"), ("scanned", "attacker"), ("scanned", "server"), ("server", "the")}
+    assert d["total_score"] == 72
+
+
+def test_hmm_masks_alert_tokens():
+    assert u2.hmm_input("172.19.131.174") == "address"
+    assert u2.hmm_input("intranet-server") == "server"
+    assert u2.hmm_input("(") == "-LRB-"
+
+
+def test_incident_aspects():
+    import pandas as pd
+    from nlp.unit5_summarize_qa import incident_aspects, srl_roles
+    t = pd.to_datetime(["2022-01-29T13:00:00Z", "2022-01-29T13:01:00Z", "2022-01-29T13:02:00Z"])
+    g = pd.DataFrame({"timestamp": t, "description": ["PAM: User login failed"] * 3})
+    assert incident_aspects(g)["frequency"] == "repeated" and incident_aspects(g)["outcome"] == "attempted"
+    g.loc[2, "description"] = "sshd: authentication success"
+    assert incident_aspects(g)["outcome"] == "succeeded"
+    assert incident_aspects(g.head(1))["frequency"] == "one-off"
+    roles = srl_roles({"actor": "1.2.3.4", "action_head": None}, {"description": "Multiple IDS events", "timestamp": t[0]})
+    assert roles["Action"].startswith("trigger")
