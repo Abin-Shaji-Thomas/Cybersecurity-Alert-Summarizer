@@ -1,0 +1,18 @@
+fastapi
+uvicorn
+python-multipart
+pandas
+numpy
+nltk
+spacy
+scikit-learn
+matplotlib
+rouge-score
+networkx
+reportlab
+transformers
+sentencepiece
+pytest
+httpx
+# torch is installed from the CPU-only index (see setup.bat):
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu

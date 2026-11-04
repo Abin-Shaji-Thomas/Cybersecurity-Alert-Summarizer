@@ -1,0 +1,27 @@
+# Python
+backend/.venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Node / Vite
+node_modules/
+dist/
+
+# Data and databases
+data/raw/
+*.db
+*.db-journal
+data/uploads/
+
+# Model caches
+.cache/
+hf_cache/
+models/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.claude/settings.local.json
