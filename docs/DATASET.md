@@ -89,3 +89,10 @@ Attacker IP (from the dirb/wpscan windows): russellmitchell `172.19.131.174`, sh
 1,515 raw alerts from 2022-01-24 03:00–04:45 and 13:45–14:30 UTC (all attack phases). The flood of
 *Web server 400 error code* alerts keeps every 6th alert and Dovecot/ClamAV background every 3rd; the rest is
 kept as is. After deduplication the app sees 1,467 alerts.
+
+## Test samples
+
+`test_samples/` holds four small upload files cut from **shaw** (29 Jan 2022) by `backend/scripts/make_test_samples.py`:
+login brute force on the mail server, wpscan/dirb web scanning, DNS + malformed TLS traffic, and the full attack chain, plus
+a non-JSON file for the error handling. AIT-ADS contains no SSH brute force; the brute-force example is the real
+PAM/Dovecot password guessing by 10.70.34.215. See `test_samples/README.md`.

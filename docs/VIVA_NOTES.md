@@ -40,20 +40,25 @@ uploaded file. A toy CNF grammar and our own CKY parser show constituency parsin
 from 10.35.1.4".
 
 * **What does Viterbi store?** v[i][t] = best log-probability of tagging words 0..i ending in tag t, plus a back-pointer to the previous tag. Cost O(n·T²).
-* **Why does the HMM agree with spaCy only 0.558 of the time?** It was trained on Wall Street Journal text and has never seen IPs, quotes
-  around alert names or host names. It tags them NUM/PRT where spaCy says NOUN/punctuation. This is a domain shift.
+* **Why does the HMM agree with spaCy only 0.678 of the time?** It was trained on Wall Street Journal text and has never seen IPs or
+  host names (domain shift). We mask them first (IP → "address", intranet-server → "server", ( → -LRB-), which raised
+  agreement from 0.558 to 0.678. Words like "level" and "targeting" in our template are still tagged differently.
 * **Why must the grammar be in Chomsky Normal Form for CKY?** CKY combines exactly two adjacent sub-spans per rule (A → B C) or one word (A → w), so every cell is filled from two smaller cells.
 
 ## 3. Unit III — `unit3_dependency_semantics.py`
 
 spaCy's dependency parser is transition-based (stack + buffer + SHIFT/ARC actions chosen by a neural network). Graph-based
-and neural constituency parsing are explained in comments only. From the tree we extract triples: the actor is the object of
+parsing is shown with our own Chu-Liu/Edmonds maximum spanning tree on a toy sentence (best head per word, contract the cycle,
+re-score, expand), and neural constituency parsing is explained in comments only. From the tree we extract triples: the actor is the object of
 "from" (or the user), the action is the verb of the quoted description, and the target is the subject of "reported" plus the port.
 If the description has no verb, the head noun is turned into a verb with WordNet derivational morphology
 (authentication → authenticate). Triples are scored against 20 gold triples. Word vectors are rows of a word × context co-occurrence matrix.
 
 * **Triple scores?** P = R = 0.65. Actor accuracy 0.95 and target accuracy 1.0, but verb accuracy only 0.7: "400 error code"
-  becomes "serve" (WordNet's verb for "server") where the gold label is "request".
+  has no action word (gold label "request"), and "handshake message" becomes "shake_hands" (gold "send").
+* **How does Chu-Liu/Edmonds work?** Each word takes its best-scoring head. If that makes a cycle (attacker ↔ scanned), the cycle
+  becomes one node, arcs into it are re-scored as score − score of the cycle arc they replace, the smaller problem is solved and
+  the cycle is expanded again. Our toy tree (score 72) equals spaCy's parse.
 * **What is head-finding?** Choosing the word that represents a phrase. In "web server 400 error code" the head is "code", and the others are compound modifiers.
 * **How are synonyms normalised?** WordNet: "attempted" and "tried" share the synset try.v.01, so both map to the canonical action "try".
 
@@ -76,11 +81,12 @@ MAPS_TO). Each alert becomes a time-stamped event for the timeline.
 Each alert gets an attack phase, from the AIT-ADS labels.csv time windows or otherwise from MITRE tactic rules. Incidents get
 TimeBank-style BEFORE/OVERLAPS links. Template filling is the main summary: slots (what happened, attacker, targets, time
 window, phases, severity, MITRE, rarest alert, recommended action) are filled from the incident's alerts and rendered as 3–5
-sentences. The baselines are the sentences closest to the TF-IDF centroid (extractive) and distilbart-cnn-6-6 on CPU (abstractive,
+sentences. Aspect analysis adds frequency (one-off / repeated / ongoing) and outcome (attempted / succeeded) to each incident. The baselines are the sentences closest to the TF-IDF centroid (extractive) and distilbart-cnn-6-6 on CPU (abstractive,
 on demand). Rule-based SRL maps triples to Agent / Action / Patient / Time / Location. The Q&A chatbot detects the
-intent with rules, answers from the extracted facts and shows TF-IDF-retrieved supporting alerts.
+intent with rules, answers from the extracted facts and shows TF-IDF-retrieved supporting alerts. SRL's Action is the verb of
+the triple, or "trigger" if the alert has no action word.
 
-* **Which summary is best and why?** Template: ROUGE-1 0.49, against 0.33 extractive and 0.35 abstractive. The slots
+* **Which summary is best and why?** Template: ROUGE-1 0.47, against 0.33 extractive and 0.35 abstractive. The slots
   contain exactly the facts an analyst writes (who, what, when, target), and the pretrained model was trained on news, not alerts.
 * **Why not rely on the abstractive model?** It mostly copies alert sentences and can corrupt facts. In one run it shortened an IP
   address to "172.19.18", which is dangerous in a security report.
@@ -92,7 +98,7 @@ intent with rules, answers from the extracted facts and shows TF-IDF-retrieved s
 `run_pipeline(df)` runs Unit I → V in order and returns plain Python data for the database. Speed caps keep it fast on a laptop CPU.
 spaCy parses at most 3,000 unique sentence patterns (time of day removed, rarest first); the rest get entities from the structured
 fields. Co-occurrence vectors use at most 20,000 sentences, and silhouette uses a 2,000-point sample. Full russellmitchell (21,354 alerts)
-takes about 26 s and the 1,467-alert sample about 10 s.
+takes about 28 s and the 1,467-alert sample about 10 s.
 
 * **Why parse unique patterns only?** Thousands of alerts differ only in time; parsing one copy gives the same result.
 * **What happens to alerts beyond the spaCy cap?** Their entities and triple come from the structured fields (IP, host, port, user).

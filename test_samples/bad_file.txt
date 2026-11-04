@@ -1,0 +1,2 @@
+This is not an alert file.
+The app should reject it with a clear error.

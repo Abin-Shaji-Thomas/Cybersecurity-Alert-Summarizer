@@ -1,13 +1,13 @@
 {
- "generated_at": "2026-11-04 19:01",
- "seconds": 93.7,
+ "generated_at": "2026-11-04 19:33",
+ "seconds": 138.5,
  "scenarios": {
   "russellmitchell": {
    "n_alerts": 21354,
    "n_alert_types": 33,
    "n_incidents": 214,
    "n_high_or_critical": 61,
-   "seconds": 17.4,
+   "seconds": 27.5,
    "lm": {
     "n_train_sentences": 126,
     "n_test_sentences": 31,
@@ -370,7 +370,7 @@
    "n_alert_types": 36,
    "n_incidents": 444,
    "n_high_or_critical": 124,
-   "seconds": 18.7,
+   "seconds": 30.4,
    "lm": {
     "n_train_sentences": 88,
     "n_test_sentences": 21,
@@ -650,9 +650,9 @@
   "n_matched": 25,
   "mean_f1": {
    "template": {
-    "rouge1": 0.4948,
-    "rouge2": 0.196,
-    "rougeL": 0.3312
+    "rouge1": 0.4681,
+    "rouge2": 0.182,
+    "rougeL": 0.3131
    },
    "extractive": {
     "rouge1": 0.3293,
@@ -673,15 +673,15 @@
     "matched": true,
     "reference": "On 24 Jan 2022 from 03:56 to 04:00 UTC, 172.19.131.174 scanned the intranet web server: 550 alerts for multiple 400 error codes from the same source on intranet-server port 80, together with Nmap user-agent detections, sshd scan attempts and requests for forbidden files. This is web reconnaissance (MITRE T1595.002) during the dirb and wpscan phases. Severity is critical; block 172.19.131.174 and review the exposed web paths.",
     "outputs": {
-     "template": "From 2022-01-24 03:56:47 to 04:00:28 UTC (3 min 41 s), intranet-server, vpn, webserver and 7 more (ports 80) raised 625 alerts, mainly 'Multiple web server 400 error codes from same source ip' (550), plus Suricata: Alert - ET SCAN Possible Nmap User-Agent Observed (36), sshd: insecure connection attempt (scan) (10). The activity came from 172.19.131.174 (596 alerts), 192.168.230.122 (17 alerts), 172.19.130.4 (6 alerts) and 3 more. Severity is Critical (max Wazuh level 10; MITRE T1595.002, T1021.004, T1055, T1190, T1083 - Lateral Movement, Reconnaissance, Defense Evasion, Privilege Escalation and 2 more) in attack phase(s) service_scans, wpscan, dirb, cracking. Recommended action: Block or rate-limit the scanning IP at the firewall/WAF and check the web server for exposed or vulnerable paths (directory brute-forcing / WordPress scanning).",
+     "template": "From 2022-01-24 03:56:47 to 04:00:28 UTC (3 min 41 s), intranet-server, vpn, webserver and 7 more (ports 80) raised 625 alerts, mainly 'Multiple web server 400 error codes from same source ip' (550), plus Suricata: Alert - ET SCAN Possible Nmap User-Agent Observed (36), sshd: insecure connection attempt (scan) (10). The activity came from 172.19.131.174 (596 alerts), 192.168.230.122 (17 alerts), 172.19.130.4 (6 alerts) and 3 more. Severity is Critical (max Wazuh level 10; MITRE T1595.002, T1021.004, T1055, T1190, T1083 - Lateral Movement, Reconnaissance, Defense Evasion, Privilege Escalation and 2 more) in attack phase(s) service_scans, wpscan, dirb, cracking. Aspects: repeated activity; it was only attempted (no alert reports a success). Recommended action: Block or rate-limit the scanning IP at the firewall/WAF and check the web server for exposed or vulnerable paths (directory brute-forcing / WordPress scanning).",
      "extractive": "At 03:57:27, host intranet-server reported 'Multiple web server 400 error codes from same source ip' from 172.19.131.174 targeting port 80 requesting /alarm (level 10). At 03:57:33, host intranet-server reported 'Common web attack' from 172.19.131.174 targeting port 80 requesting /msadc (level 6). At 03:58:14, host vpn reported 'Multiple IDS events from same source ip' from 172.19.130.4 targeting port 35200 (level 10).",
      "abstractive": "Host webserver reported 'Multiple IDS alerts for same id' from 192.168.230.122 targeting port 80 (level 10) At 03:56:47, host intranet-server reported 'sshd: insecure connection attempt (scan) from 172.19.131.174 (level 6)"
     },
     "scores": {
      "template": {
-      "rouge1": 0.5339,
-      "rouge2": 0.1826,
-      "rougeL": 0.3077
+      "rouge1": 0.5064,
+      "rouge2": 0.1732,
+      "rougeL": 0.2918
      },
      "extractive": {
       "rouge1": 0.3377,
@@ -702,15 +702,15 @@
     "matched": true,
     "reference": "Between 03:56:53 and 03:58:12 UTC on 24 Jan 2022, the intranet-server web server logged 7089 HTTP 400 errors on port 80, almost all from 172.19.131.174. The burst of requests for missing pages is directory brute forcing and WordPress scanning (dirb, wpscan). Rate-limit or block the source and check which requested paths exist.",
     "outputs": {
-     "template": "From 2022-01-24 03:56:53 to 03:58:12 UTC (1 min 19 s), intranet-server, webserver, morris-mail and 3 more (ports 80) raised 7090 alerts, mainly 'Web server 400 error code' (7089), plus Web server 500 error code (Internal Error) (1). The activity came from 172.19.131.174 (7078 alerts), 192.168.230.122 (12 alerts). Severity is Medium (max Wazuh level 5) in attack phase(s) service_scans, wpscan, dirb. Recommended action: Block or rate-limit the scanning IP at the firewall/WAF and check the web server for exposed or vulnerable paths (directory brute-forcing / WordPress scanning).",
+     "template": "From 2022-01-24 03:56:53 to 03:58:12 UTC (1 min 19 s), intranet-server, webserver, morris-mail and 3 more (ports 80) raised 7090 alerts, mainly 'Web server 400 error code' (7089), plus Web server 500 error code (Internal Error) (1). The activity came from 172.19.131.174 (7078 alerts), 192.168.230.122 (12 alerts). Severity is Medium (max Wazuh level 5) in attack phase(s) service_scans, wpscan, dirb. Aspects: repeated activity; it was only attempted (no alert reports a success). Recommended action: Block or rate-limit the scanning IP at the firewall/WAF and check the web server for exposed or vulnerable paths (directory brute-forcing / WordPress scanning).",
      "extractive": "At 03:57:29, host intranet-server reported 'Web server 400 error code' from 172.19.131.174 targeting port 80 requesting /CVS/Root (level 5). At 03:57:56, host intranet-server reported 'Web server 500 error code (Internal Error)' from 172.19.131.174 targeting port 80 requesting /wp-content/themes/go/ (level 5). At 03:58:11, host intranet-server reported 'Web server 400 error code' from 172.19.131.174 targeting port 80 requesting /?attachment_id=49 (level 5).",
      "abstractive": "At 03.57:27, host intranet-server reported 'Web server 400 error code' from 172.19.18 ."
     },
     "scores": {
      "template": {
-      "rouge1": 0.5212,
-      "rouge2": 0.2209,
-      "rougeL": 0.3273
+      "rouge1": 0.4859,
+      "rouge2": 0.2057,
+      "rougeL": 0.3051
      },
      "extractive": {
       "rouge1": 0.2639,
@@ -731,15 +731,15 @@
     "matched": true,
     "reference": "At 03:56 to 03:57 UTC on 24 Jan 2022 Suricata raised two SMTP no server welcome message alerts on inet-firewall and vpn involving 192.168.230.4 and 172.19.130.4, during the service scan phase. This is most likely a probe of the mail service. Low impact; verify that the mail service behaves normally.",
     "outputs": {
-     "template": "From 2022-01-24 03:56:58 to 03:57:15 UTC (16 s), inet-firewall, vpn raised 2 alerts, mainly 'Suricata: Alert - SURICATA SMTP no server welcome message' (2). The activity came from 192.168.230.4 (1 alert), 172.19.130.4 (1 alert). Severity is Medium (max Wazuh level 6) in attack phase(s) service_scans. Recommended action: Review the alerts and confirm whether the activity is expected.",
+     "template": "From 2022-01-24 03:56:58 to 03:57:15 UTC (16 s), inet-firewall, vpn raised 2 alerts, mainly 'Suricata: Alert - SURICATA SMTP no server welcome message' (2). The activity came from 192.168.230.4 (1 alert), 172.19.130.4 (1 alert). Severity is Medium (max Wazuh level 6) in attack phase(s) service_scans. Aspects: one-off activity; it was only attempted (no alert reports a success). Recommended action: Review the alerts and confirm whether the activity is expected.",
      "extractive": "At 03:56:58, host inet-firewall reported 'Suricata: Alert - SURICATA SMTP no server welcome message' from 192.168.230.4 targeting port 49954 (level 6). At 03:57:15, host vpn reported 'Suricata: Alert - SURICATA SMTP no server welcome message' from 172.19.130.4 targeting port 53440 (level 6).",
      "abstractive": "At 03.56:58, host inet-firewall reported 'Suricata: Alert - SURICATA SMTP no server welcome message' from 192.168.230 ."
     },
     "scores": {
      "template": {
-      "rouge1": 0.5385,
-      "rouge2": 0.2344,
-      "rougeL": 0.3692
+      "rouge1": 0.5035,
+      "rouge2": 0.2128,
+      "rougeL": 0.3497
      },
      "extractive": {
       "rouge1": 0.4182,
@@ -760,15 +760,15 @@
     "matched": true,
     "reference": "From 03:57 to 03:59 UTC on 24 Jan 2022 Suricata saw 12 malformed TLS alerts (invalid record, invalid SSLv2 header) mostly on the mail host port 587, from 172.19.130.4 and other hosts, during the service scan and webshell phases. These suggest a scanner probing TLS services. Inspect the TLS clients and the mail submission port.",
     "outputs": {
-     "template": "From 2022-01-24 03:57:01 to 03:58:55 UTC (1 min 53 s), mail, vpn, inet-firewall (ports 587) raised 12 alerts, mainly 'Suricata: Alert - SURICATA TLS invalid record/traffic' (6), plus Suricata: Alert - SURICATA TLS invalid SSLv2 header (4), Suricata: Alert - SURICATA TLS invalid record type (2). The activity came from 172.19.130.4 (6 alerts), 192.168.230.122 (2 alerts), 172.19.131.174 (2 alerts) and 1 more. Severity is High (max Wazuh level 8) in attack phase(s) service_scans, wpscan, webshell. Recommended action: Check the TLS clients involved; malformed TLS traffic can indicate tunnelling or non-TLS traffic on TLS ports.",
+     "template": "From 2022-01-24 03:57:01 to 03:58:55 UTC (1 min 53 s), mail, vpn, inet-firewall (ports 587) raised 12 alerts, mainly 'Suricata: Alert - SURICATA TLS invalid record/traffic' (6), plus Suricata: Alert - SURICATA TLS invalid SSLv2 header (4), Suricata: Alert - SURICATA TLS invalid record type (2). The activity came from 172.19.130.4 (6 alerts), 192.168.230.122 (2 alerts), 172.19.131.174 (2 alerts) and 1 more. Severity is High (max Wazuh level 8) in attack phase(s) service_scans, wpscan, webshell. Aspects: repeated activity; it was only attempted (no alert reports a success). Recommended action: Check the TLS clients involved; malformed TLS traffic can indicate tunnelling or non-TLS traffic on TLS ports.",
      "extractive": "At 03:57:01, host mail reported 'Suricata: Alert - SURICATA TLS invalid record/traffic' from 192.168.230.122 targeting port 587 (level 6). At 03:57:01, host mail reported 'Suricata: Alert - SURICATA TLS invalid SSLv2 header' from 172.19.130.4 targeting port 49974 (level 6). At 03:58:14, host vpn reported 'Suricata: Alert - SURICATA TLS invalid record type' from 172.19.130.4 targeting port 35200 (level 3).",
      "abstractive": "At 03:57:01, host mail reported 'Suricata: Alert - SURICATA TLS invalid record/traffic' from 192.168.230.122 targeting port 587 (level 6) At 03:58:14, host vpn reported 'SURICATA SSLv2 header'"
     },
     "scores": {
      "template": {
-      "rouge1": 0.4444,
-      "rouge2": 0.1657,
-      "rougeL": 0.3158
+      "rouge1": 0.4262,
+      "rouge2": 0.1547,
+      "rougeL": 0.306
      },
      "extractive": {
       "rouge1": 0.3939,
@@ -789,15 +789,15 @@
     "matched": true,
     "reference": "At 04:37 to 04:38 UTC on 24 Jan 2022, on intranet-server, user jhall ran sudo to root, changed UID to root and opened root login sessions. This is privilege escalation (MITRE T1548.003) shortly after the web attack. Treat it as critical: verify the jhall account, review the commands run as root and reset its credentials.",
     "outputs": {
-     "template": "From 2022-01-24 04:37:40 to 05:03:11 UTC (25 min 31 s), intranet-server, vpn (ports 80) raised 7 alerts, mainly 'PAM: Login session opened' (2), plus Successful sudo to ROOT executed (2), User successfully changed UID (1). The activity came from 172.19.131.174 (1 alert). Severity is Critical (max Wazuh level 10; MITRE T1078, T1548.003 - Defense Evasion, Persistence, Privilege Escalation, Initial Access) in attack phase(s) privilege_escalation, normal. Recommended action: Verify the sudo/root activity with the account owner, review commands run, and reset credentials if it was not authorised.",
+     "template": "From 2022-01-24 04:37:40 to 05:03:11 UTC (25 min 31 s), intranet-server, vpn (ports 80) raised 7 alerts, mainly 'PAM: Login session opened' (2), plus Successful sudo to ROOT executed (2), User successfully changed UID (1). The activity came from 172.19.131.174 (1 alert). Severity is Critical (max Wazuh level 10; MITRE T1078, T1548.003 - Defense Evasion, Persistence, Privilege Escalation, Initial Access) in attack phase(s) privilege_escalation, normal. Aspects: repeated activity; it succeeded (5 success alert(s), e.g. 'User successfully changed UID'). Recommended action: Verify the sudo/root activity with the account owner, review commands run, and reset credentials if it was not authorised.",
      "extractive": "At 04:37:40, host intranet-server reported 'PAM: Login session opened' for user jhall (level 3). At 04:37:58, host intranet-server reported 'Successful sudo to ROOT executed' for user root (level 3). At 04:38:06, host intranet-server reported 'PAM: Login session closed' for user root (level 3).",
      "abstractive": "At 04:37:58, host intranet-server reported 'Successful sudo to ROOT executed' for user root . At 04:38:06, host vpn reported 'Multiple IDS alerts for same id' from 172.19.131.174 targeting port 80 ."
     },
     "scores": {
      "template": {
-      "rouge1": 0.481,
-      "rouge2": 0.141,
-      "rougeL": 0.3165
+      "rouge1": 0.4393,
+      "rouge2": 0.1287,
+      "rougeL": 0.3006
      },
      "extractive": {
       "rouge1": 0.3063,
@@ -818,15 +818,15 @@
     "matched": true,
     "reference": "Between 14:30 and 14:50 UTC on 24 Jan 2022, Wazuh correlated repeated IDS alerts on port 443 involving 172.19.130.68 on webserver and 192.168.230.4 on inet-firewall, during the DNS exfiltration phase. Repeated TLS related IDS hits can indicate tunnelling. Check the webserver outbound traffic and its DNS queries.",
     "outputs": {
-     "template": "From 2022-01-24 14:30:15 to 14:49:52 UTC (19 min 36 s), webserver, inet-firewall (ports 443) raised 2 alerts, mainly 'Multiple IDS alerts for same id' (2). The activity came from 172.19.130.68 (1 alert), 192.168.230.4 (1 alert). Severity is High (max Wazuh level 10) in attack phase(s) dnsteal. Recommended action: Review the alerts and confirm whether the activity is expected.",
+     "template": "From 2022-01-24 14:30:15 to 14:49:52 UTC (19 min 36 s), webserver, inet-firewall (ports 443) raised 2 alerts, mainly 'Multiple IDS alerts for same id' (2). The activity came from 172.19.130.68 (1 alert), 192.168.230.4 (1 alert). Severity is High (max Wazuh level 10) in attack phase(s) dnsteal. Aspects: one-off activity; it was only attempted (no alert reports a success). Recommended action: Review the alerts and confirm whether the activity is expected.",
      "extractive": "At 14:30:15, host webserver reported 'Multiple IDS alerts for same id' from 172.19.130.68 targeting port 443 (level 10). At 14:49:52, host inet-firewall reported 'Multiple IDS alerts for same id' from 192.168.230.4 targeting port 443 (level 10).",
      "abstractive": "At 14:30:15, host webserver reported 'Multiple IDS alerts for same id' from 172.19.130.68 ."
     },
     "scores": {
      "template": {
-      "rouge1": 0.4063,
-      "rouge2": 0.1587,
-      "rougeL": 0.2656
+      "rouge1": 0.3688,
+      "rouge2": 0.1439,
+      "rougeL": 0.2411
      },
      "extractive": {
       "rouge1": 0.3689,
@@ -847,15 +847,15 @@
     "matched": true,
     "reference": "On 21 Jan 2022 from 15:38 to 16:15 UTC Suricata raised 28 HTTP unable to match response to request alerts plus repeated IDS correlations, mainly for the external address 144.217.146.12 seen on inet-firewall and vpn. This looks like protocol anomalies in normal web traffic rather than an attack. Review the external address and confirm the traffic is expected.",
     "outputs": {
-     "template": "From 2022-01-21 15:38:11 to 16:15:15 UTC (37 min 4 s), inet-firewall, vpn (ports 443, 80) raised 42 alerts, mainly 'Suricata: Alert - SURICATA HTTP unable to match response to request' (28), plus Multiple IDS alerts for same id (5), Multiple IDS events from same source ip (4). The activity came from 144.217.146.12 (24 alerts), 212.95.70.239 (8 alerts), 192.168.230.4 (5 alerts) and 2 more. Severity is Critical (max Wazuh level 11). Recommended action: Review the alerts and confirm whether the activity is expected.",
+     "template": "From 2022-01-21 15:38:11 to 16:15:15 UTC (37 min 4 s), inet-firewall, vpn (ports 443, 80) raised 42 alerts, mainly 'Suricata: Alert - SURICATA HTTP unable to match response to request' (28), plus Multiple IDS alerts for same id (5), Multiple IDS events from same source ip (4). The activity came from 144.217.146.12 (24 alerts), 212.95.70.239 (8 alerts), 192.168.230.4 (5 alerts) and 2 more. Severity is Critical (max Wazuh level 11). Aspects: ongoing activity; it was only attempted (no alert reports a success). Recommended action: Review the alerts and confirm whether the activity is expected.",
      "extractive": "At 15:38:11, host inet-firewall reported 'Multiple IDS alerts for same id' from 192.168.230.4 targeting port 80 (level 10). At 16:06:03, host inet-firewall reported 'Suricata: Alert - SURICATA HTTP unable to match response to request' from 212.95.70.239 targeting port 58854 (level 8). At 16:10:05, host inet-firewall reported 'Suricata: Alert - SURICATA HTTP gzip decompression failed' from 212.95.70.239 targeting port 58896 requesting /le-figaro/2021-12-30 (level 3).",
      "abstractive": "At 15:38:11, host inet-firewall reported 'Multiple IDS alerts for same id' from 192.168.230.4 targeting port 80 (level 10) At 16:10:05, host Inet-Firewall reported \u2018Suricata: Alert - SURICATA HTTP gzip decompression"
     },
     "scores": {
      "template": {
-      "rouge1": 0.4969,
-      "rouge2": 0.2138,
-      "rougeL": 0.3851
+      "rouge1": 0.4624,
+      "rouge2": 0.1988,
+      "rougeL": 0.3584
      },
      "extractive": {
       "rouge1": 0.2449,
@@ -876,15 +876,15 @@
     "matched": true,
     "reference": "Between 09:16 and 10:42 UTC on 24 Jan 2022, Wazuh flagged 19 repeated IDS alerts for the same id and the same source on port 443, mostly from 192.168.230.4 on inet-firewall and vpn. These are aggregated duplicates of TLS anomaly alerts in normal traffic. Tune the noisy signature and confirm the source is a legitimate client.",
     "outputs": {
-     "template": "From 2022-01-24 09:16:53 to 10:42:17 UTC (1 h 25 min), inet-firewall, vpn, webserver (ports 443) raised 19 alerts, mainly 'Multiple IDS alerts for same id' (12), plus Multiple IDS events from same source ip (6), Multiple IDS alerts for same id (ignoring now this id) (1). The activity came from 192.168.230.4 (8 alerts), 172.19.131.174 (3 alerts), 81.3.192.66 (2 alerts) and 5 more. Severity is Critical (max Wazuh level 11). Recommended action: Review the alerts and confirm whether the activity is expected.",
+     "template": "From 2022-01-24 09:16:53 to 10:42:17 UTC (1 h 25 min), inet-firewall, vpn, webserver (ports 443) raised 19 alerts, mainly 'Multiple IDS alerts for same id' (12), plus Multiple IDS events from same source ip (6), Multiple IDS alerts for same id (ignoring now this id) (1). The activity came from 192.168.230.4 (8 alerts), 172.19.131.174 (3 alerts), 81.3.192.66 (2 alerts) and 5 more. Severity is Critical (max Wazuh level 11). Aspects: ongoing activity; it was only attempted (no alert reports a success). Recommended action: Review the alerts and confirm whether the activity is expected.",
      "extractive": "At 09:16:53, host inet-firewall reported 'Multiple IDS alerts for same id' from 192.168.230.4 targeting port 443 (level 10). At 09:39:08, host inet-firewall reported 'Multiple IDS events from same source ip' from 192.168.230.4 targeting port 443 (level 10). At 09:43:35, host inet-firewall reported 'Multiple IDS alerts for same id (ignoring now this id)' from 192.168.230.4 targeting port 443 (level 11).",
      "abstractive": "At 09:16:53, host inet-firewall reported 'Multiple IDS alerts for same id' from 192.168.230.4 targeting port 443 (level 10) At 09:43:35, host Inet-Firewall reported \u2018Multiple ID s events from same source ip\u2019 from 192"
     },
     "scores": {
      "template": {
-      "rouge1": 0.4277,
-      "rouge2": 0.1656,
-      "rougeL": 0.3019
+      "rouge1": 0.4094,
+      "rouge2": 0.1538,
+      "rougeL": 0.2924
      },
      "extractive": {
       "rouge1": 0.2878,
@@ -905,15 +905,15 @@
     "matched": true,
     "reference": "On 22 Jan 2022 between 10:06 and 11:04 UTC, inet-firewall and vpn reported 16 alerts: repeated IDS hits on port 443 and DNS queries to a .cloud domain from 192.168.230.4 and 172.19.131.174. No attack phase was active. Check the .cloud DNS lookups and tune the repeated signatures.",
     "outputs": {
-     "template": "From 2022-01-22 10:06:51 to 11:04:51 UTC (57 min 59 s), inet-firewall, vpn (ports 443, 53) raised 16 alerts, mainly 'Multiple IDS alerts for same id' (8), plus Suricata: Alert - ET INFO Observed DNS Query to .cloud TLD (4), Multiple IDS events from same source ip (3). The activity came from 192.168.230.4 (10 alerts), 172.19.131.174 (6 alerts). Severity is Critical (max Wazuh level 11). Recommended action: Check DNS logs for long or high-volume queries (possible DNS tunnelling / exfiltration) and block the destination.",
+     "template": "From 2022-01-22 10:06:51 to 11:04:51 UTC (57 min 59 s), inet-firewall, vpn (ports 443, 53) raised 16 alerts, mainly 'Multiple IDS alerts for same id' (8), plus Suricata: Alert - ET INFO Observed DNS Query to .cloud TLD (4), Multiple IDS events from same source ip (3). The activity came from 192.168.230.4 (10 alerts), 172.19.131.174 (6 alerts). Severity is Critical (max Wazuh level 11). Aspects: ongoing activity; it was only attempted (no alert reports a success). Recommended action: Check DNS logs for long or high-volume queries (possible DNS tunnelling / exfiltration) and block the destination.",
      "extractive": "At 10:06:51, host inet-firewall reported 'Multiple IDS alerts for same id' from 192.168.230.4 targeting port 443 (level 10). At 10:24:15, host inet-firewall reported 'Multiple IDS events from same source ip' from 192.168.230.4 targeting port 443 (level 10). At 10:57:07, host vpn reported 'Multiple IDS alerts for same id (ignoring now this id)' from 172.19.131.174 targeting port 443 (level 11).",
      "abstractive": "At 10:06:51, host inet-firewall reported 'Multiple IDS alerts for same id' from 192.168.230.4 targeting port 443 (level 10) At 10:24:15, host vpn reported 'multiple IDS events from same source ip' from192.168 ."
     },
     "scores": {
      "template": {
-      "rouge1": 0.4503,
-      "rouge2": 0.1879,
-      "rougeL": 0.3841
+      "rouge1": 0.4663,
+      "rouge2": 0.1739,
+      "rougeL": 0.3681
      },
      "extractive": {
       "rouge1": 0.303,
@@ -934,15 +934,15 @@
     "matched": true,
     "reference": "From 06:42 to 18:17 UTC on 24 Jan 2022 the mail servers mail, davey-mail and morris-mail logged 973 successful Dovecot logins by regular users such as matthew.begum and andrea.moss, plus 20 invalid user login attempts and 5 Dovecot brute force alerts. Most of this is normal mail use, but the failures should be checked. Review the brute force alerts and the accounts involved.",
     "outputs": {
-     "template": "From 2022-01-24 06:42:39 to 18:17:52 UTC (11 h 35 min), mail, davey-mail, morris-mail raised 1004 alerts, mainly 'Dovecot Authentication Success' (973), plus Dovecot Invalid User Login Attempt (20), Dovecot brute force attack (multiple auth failures) (5). The activity came from 172.19.130.4 (28 alerts). Severity is Critical (max Wazuh level 10; MITRE T1078, T1110, T1110.001 - Defense Evasion, Persistence, Privilege Escalation, Initial Access and 1 more) in attack phase(s) dnsteal, normal. The most unusual alert was 'syslog: User authentication failure'. Recommended action: Block the source IP, enforce account lockout and MFA, and check for any successful logins after the failures.",
+     "template": "From 2022-01-24 06:42:39 to 18:17:52 UTC (11 h 35 min), mail, davey-mail, morris-mail raised 1004 alerts, mainly 'Dovecot Authentication Success' (973), plus Dovecot Invalid User Login Attempt (20), Dovecot brute force attack (multiple auth failures) (5). The activity came from 172.19.130.4 (28 alerts). Severity is Critical (max Wazuh level 10; MITRE T1078, T1110, T1110.001 - Defense Evasion, Persistence, Privilege Escalation, Initial Access and 1 more) in attack phase(s) dnsteal, normal. Aspects: ongoing activity; it succeeded (973 success alert(s), e.g. 'Dovecot Authentication Success'). The most unusual alert was 'syslog: User authentication failure'. Recommended action: Block the source IP, enforce account lockout and MFA, and check for any successful logins after the failures.",
      "extractive": "At 09:51:26, host mail reported 'Dovecot Invalid User Login Attempt' for user alyssa.hayes from 172.19.130.4 (level 5). At 16:22:57, host mail reported 'syslog: User authentication failure' (level 5). At 17:59:09, host mail reported 'Dovecot Authentication Success' for user traci.stevenson (level 3).",
      "abstractive": "Host mail reported 'Dovecot brute force attack (multiple auth failures)' for user alyssa.hayes from 172.19.130.4 (level 10.4) At 16:22:54, host mail reported \u2018PAM: User login failed\u2019 for user toby.white from 172"
     },
     "scores": {
      "template": {
-      "rouge1": 0.4889,
-      "rouge2": 0.1348,
-      "rougeL": 0.3222
+      "rouge1": 0.4536,
+      "rouge2": 0.1354,
+      "rougeL": 0.299
      },
      "extractive": {
       "rouge1": 0.2479,
@@ -963,15 +963,15 @@
     "matched": true,
     "reference": "On 21 Jan 2022 at 05:35 to 05:38 UTC Suricata logged 46 GNU/Linux APT user agent outbound alerts on port 80 from webserver (172.19.130.68) and inet-firewall. This is routine package manager update traffic. No action is needed beyond confirming the update servers are expected.",
     "outputs": {
-     "template": "From 2022-01-21 05:35:27 to 05:37:54 UTC (2 min 26 s), webserver, inet-firewall (ports 80) raised 46 alerts, mainly 'Suricata: Alert - ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management' (46). The activity came from 172.19.130.68 (23 alerts), 192.168.230.4 (23 alerts). Severity is Medium (max Wazuh level 6). Recommended action: Review the alerts and confirm whether the activity is expected.",
+     "template": "From 2022-01-21 05:35:27 to 05:37:54 UTC (2 min 26 s), webserver, inet-firewall (ports 80) raised 46 alerts, mainly 'Suricata: Alert - ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management' (46). The activity came from 172.19.130.68 (23 alerts), 192.168.230.4 (23 alerts). Severity is Medium (max Wazuh level 6). Aspects: repeated activity; it was only attempted (no alert reports a success). Recommended action: Review the alerts and confirm whether the activity is expected.",
      "extractive": "At 05:35:27, host webserver reported 'Suricata: Alert - ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management' from 172.19.130.68 targeting port 80 requesting /ubuntu/dists/bionic/InRelease (level 3). At 05:35:27, host webserver reported 'Suricata: Alert - ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management' from 172.19.130.68 targeting port 80 requesting /oisf/suricata-stable/ubuntu/dists/bionic/InRelease (level 3). At 05:35:27, host webserver reported 'Suricata: Alert - ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management' from 172.19.130.68 targeting port 80 requesting /ubuntu/dists/bionic-updates/InRelease (level 3).",
      "abstractive": "At 05.35:27, host webserver reported 'Suricata: Alert - ET POLICYGN/Linux APT User-Agent Outbound likely related to package management' from 172.19.130.68 ."
     },
     "scores": {
      "template": {
-      "rouge1": 0.5512,
-      "rouge2": 0.208,
-      "rougeL": 0.3622
+      "rouge1": 0.518,
+      "rouge2": 0.1898,
+      "rougeL": 0.3453
      },
      "extractive": {
       "rouge1": 0.2892,
@@ -992,15 +992,15 @@
     "matched": true,
     "reference": "Throughout 24 Jan 2022 (08:00 to 18:17 UTC) Suricata reported 862 TLS invalid handshake message alerts on webserver, inet-firewall and vpn, mainly on port 443, from several internal hosts including 172.19.130.4 and 172.19.130.68; 80 of them fall in the DNS exfiltration window. Malformed TLS on port 443 may hide tunnelled traffic. Inspect the TLS sessions of these hosts.",
     "outputs": {
-     "template": "From 2022-01-24 08:00:18 to 18:17:43 UTC (10 h 17 min), webserver, inet-firewall, vpn (ports 443) raised 862 alerts, mainly 'Suricata: Alert - SURICATA TLS invalid handshake message' (862). The activity came from 172.19.130.4 (168 alerts), 172.19.130.68 (160 alerts), 192.168.230.4 (138 alerts) and 112 more. Severity is High (max Wazuh level 8) in attack phase(s) dnsteal, normal. Recommended action: Check the TLS clients involved; malformed TLS traffic can indicate tunnelling or non-TLS traffic on TLS ports.",
+     "template": "From 2022-01-24 08:00:18 to 18:17:43 UTC (10 h 17 min), webserver, inet-firewall, vpn (ports 443) raised 862 alerts, mainly 'Suricata: Alert - SURICATA TLS invalid handshake message' (862). The activity came from 172.19.130.4 (168 alerts), 172.19.130.68 (160 alerts), 192.168.230.4 (138 alerts) and 112 more. Severity is High (max Wazuh level 8) in attack phase(s) dnsteal, normal. Aspects: ongoing activity; it was only attempted (no alert reports a success). Recommended action: Check the TLS clients involved; malformed TLS traffic can indicate tunnelling or non-TLS traffic on TLS ports.",
      "extractive": "At 16:58:29, host webserver reported 'Suricata: Alert - SURICATA TLS invalid handshake message' from 172.19.130.68 targeting port 443 (level 6). At 17:09:36, host webserver reported 'Suricata: Alert - SURICATA TLS invalid handshake message' from 172.19.130.4 targeting port 41572 (level 6). At 17:09:36, host webserver reported 'Suricata: Alert - SURICATA TLS invalid handshake message' from 172.19.130.68 targeting port 443 (level 6).",
      "abstractive": "At 17.09:36, host webserver reported 'Suricata: Alert - SURICATA TLS invalid handshake message' from 172.19.130.68 ."
     },
     "scores": {
      "template": {
-      "rouge1": 0.5409,
-      "rouge2": 0.2166,
-      "rougeL": 0.3648
+      "rouge1": 0.5146,
+      "rouge2": 0.2012,
+      "rougeL": 0.3392
      },
      "extractive": {
       "rouge1": 0.3741,
@@ -1021,15 +1021,15 @@
     "matched": true,
     "reference": "At 07:39 UTC on 23 Jan 2022 a single failed PAM login for user matthew.begum was recorded on morris-mail from 192.168.231.164 (MITRE T1110.001). One failure is low risk. Confirm it was a user mistake and watch for repeats.",
     "outputs": {
-     "template": "From 2022-01-23 07:39:41 to 07:39:41 UTC (0 s), morris-mail raised 1 alert, mainly 'PAM: User login failed' (1). The activity came from 192.168.231.164 (1 alert). Severity is Medium (max Wazuh level 5; MITRE T1110.001 - Credential Access). Recommended action: Reset affected credentials and enforce MFA.",
+     "template": "From 2022-01-23 07:39:41 to 07:39:41 UTC (0 s), morris-mail raised 1 alert, mainly 'PAM: User login failed' (1). The activity came from 192.168.231.164 (1 alert). Severity is Medium (max Wazuh level 5; MITRE T1110.001 - Credential Access). Aspects: one-off activity; it was only attempted (no alert reports a success). Recommended action: Reset affected credentials and enforce MFA.",
      "extractive": "At 07:39:41, host morris-mail reported 'PAM: User login failed' for user matthew.begum from 192.168.231.164 (level 5).",
      "abstractive": "At 07.39:41, host morris-mail reported 'PAM: User login failed' for user matthew.begum from 192.168.231.164 (level 5)"
     },
     "scores": {
      "template": {
-      "rouge1": 0.42,
-      "rouge2": 0.1633,
-      "rougeL": 0.28
+      "rouge1": 0.4425,
+      "rouge2": 0.1622,
+      "rougeL": 0.3186
      },
      "extractive": {
       "rouge1": 0.5294,
@@ -1050,15 +1050,15 @@
     "matched": true,
     "reference": "At 14:38 to 14:39 UTC on 29 Jan 2022, 172.24.249.224 tried to access forbidden files and directory indexes on intranet-server, and an insecure sshd connection (scan) was seen on inet-dns from 10.70.33.202. These are the opening probes of the web attack (service scan, dirb, wpscan). Block the scanner and check the web server permissions.",
     "outputs": {
-     "template": "From 2022-01-29 14:38:38 to 14:39:23 UTC (45 s), intranet-server, inet-dns raised 4 alerts, mainly 'Apache: Attempt to access forbidden file or directory' (2), plus sshd: insecure connection attempt (scan) (1), Apache: Attempt to access forbidden directory index (1). The activity came from 172.24.249.224 (3 alerts), 10.70.33.202 (1 alert). Severity is High (max Wazuh level 6; MITRE T1021.004, T1190 - Lateral Movement, Initial Access) in attack phase(s) service_scans, wpscan, dirb. Recommended action: Block the scanning source at the perimeter and review which services were exposed.",
+     "template": "From 2022-01-29 14:38:38 to 14:39:23 UTC (45 s), intranet-server, inet-dns raised 4 alerts, mainly 'Apache: Attempt to access forbidden file or directory' (2), plus sshd: insecure connection attempt (scan) (1), Apache: Attempt to access forbidden directory index (1). The activity came from 172.24.249.224 (3 alerts), 10.70.33.202 (1 alert). Severity is High (max Wazuh level 6; MITRE T1021.004, T1190 - Lateral Movement, Initial Access) in attack phase(s) service_scans, wpscan, dirb. Aspects: repeated activity; it was only attempted (no alert reports a success). Recommended action: Block the scanning source at the perimeter and review which services were exposed.",
      "extractive": "At 14:38:38, host inet-dns reported 'sshd: insecure connection attempt (scan)' from 10.70.33.202 (level 6). At 14:38:53, host intranet-server reported 'Apache: Attempt to access forbidden directory index' from 172.24.249.224 (level 5). At 14:39:23, host intranet-server reported 'Apache: Attempt to access forbidden file or directory' from 172.24.249.224 (level 5).",
      "abstractive": "At 14:38:38, host inet-dns reported 'sshd: insecure connection attempt (scan) from 10.70.33.202 (level 6) At 14:39:23, host intranet-server reported 'Apache: Attempt to access forbidden file or directory' from 172."
     },
     "scores": {
      "template": {
-      "rouge1": 0.5122,
-      "rouge2": 0.2222,
-      "rougeL": 0.3171
+      "rouge1": 0.4886,
+      "rouge2": 0.2069,
+      "rougeL": 0.2955
      },
      "extractive": {
       "rouge1": 0.4651,
@@ -1079,15 +1079,15 @@
     "matched": true,
     "reference": "Between 14:38 and 14:45 UTC on 29 Jan 2022, 172.24.249.224 generated 4798 HTTP 400 errors on intranet-server port 80 plus suspicious URL access and common web attack alerts. This is directory brute forcing and WordPress scanning (dirb, wpscan) that reached exploitation attempts. Treat it as critical: block the IP and inspect the web application for uploaded files.",
     "outputs": {
-     "template": "From 2022-01-29 14:38:52 to 14:45:39 UTC (6 min 47 s), intranet-server, 10.38.242.230, 10.38.243.24 (ports 80) raised 4814 alerts, mainly 'Web server 400 error code' (4798), plus Suspicious URL access (12), Web server 500 error code (Internal Error) (2). The activity came from 172.24.249.224 (4813 alerts), 172.24.251.86 (1 alert). Severity is Critical (max Wazuh level 6; MITRE T1055, T1083, T1190 - Defense Evasion, Privilege Escalation, Discovery, Initial Access) in attack phase(s) wpscan, dirb, cracking. The most unusual alert was 'Common web attack'. Recommended action: Block or rate-limit the scanning IP at the firewall/WAF and check the web server for exposed or vulnerable paths (directory brute-forcing / WordPress scanning).",
+     "template": "From 2022-01-29 14:38:52 to 14:45:39 UTC (6 min 47 s), intranet-server, 10.38.242.230, 10.38.243.24 (ports 80) raised 4814 alerts, mainly 'Web server 400 error code' (4798), plus Suspicious URL access (12), Web server 500 error code (Internal Error) (2). The activity came from 172.24.249.224 (4813 alerts), 172.24.251.86 (1 alert). Severity is Critical (max Wazuh level 6; MITRE T1055, T1083, T1190 - Defense Evasion, Privilege Escalation, Discovery, Initial Access) in attack phase(s) wpscan, dirb, cracking. Aspects: repeated activity; it was only attempted (no alert reports a success). The most unusual alert was 'Common web attack'. Recommended action: Block or rate-limit the scanning IP at the firewall/WAF and check the web server for exposed or vulnerable paths (directory brute-forcing / WordPress scanning).",
      "extractive": "At 14:38:56, host intranet-server reported 'Web server 500 error code (Internal Error)' from 172.24.249.224 targeting port 80 requesting /wp-content/themes/go/ (level 5). At 14:39:14, host intranet-server reported 'Common web attack' from 172.24.249.224 targeting port 80 requesting /_mem_bin (level 6). At 14:39:26, host intranet-server reported 'Web server 400 error code' from 172.24.249.224 targeting port 80 requesting /ws (level 5).",
      "abstractive": "At 14:38:56, host intranet-server reported 'Web server 500 error code (Internal Error)' from 172.24.24 . At 14:39:14, hostintranet server reported 'Common web attack' from 172 .24."
     },
     "scores": {
      "template": {
-      "rouge1": 0.4398,
-      "rouge2": 0.1799,
-      "rougeL": 0.2513
+      "rouge1": 0.4335,
+      "rouge2": 0.1692,
+      "rougeL": 0.2463
      },
      "extractive": {
       "rouge1": 0.2394,
@@ -1108,15 +1108,15 @@
     "matched": true,
     "reference": "From 14:38:58 to 14:39:26 UTC on 29 Jan 2022 Wazuh raised 368 alerts for multiple 400 errors from the same source, 172.24.249.224, against intranet-server port 80 (MITRE T1595.002, reconnaissance). The source is scanning the web site. Block or rate-limit 172.24.249.224.",
     "outputs": {
-     "template": "From 2022-01-29 14:38:58 to 14:39:26 UTC (28 s), intranet-server (ports 80) raised 368 alerts, mainly 'Multiple web server 400 error codes from same source ip' (368). The activity came from 172.24.249.224 (368 alerts). Severity is Critical (max Wazuh level 10; MITRE T1595.002 - Reconnaissance) in attack phase(s) wpscan, dirb. Recommended action: Block or rate-limit the scanning IP at the firewall/WAF and check the web server for exposed or vulnerable paths (directory brute-forcing / WordPress scanning).",
+     "template": "From 2022-01-29 14:38:58 to 14:39:26 UTC (28 s), intranet-server (ports 80) raised 368 alerts, mainly 'Multiple web server 400 error codes from same source ip' (368). The activity came from 172.24.249.224 (368 alerts). Severity is Critical (max Wazuh level 10; MITRE T1595.002 - Reconnaissance) in attack phase(s) wpscan, dirb. Aspects: repeated activity; it was only attempted (no alert reports a success). Recommended action: Block or rate-limit the scanning IP at the firewall/WAF and check the web server for exposed or vulnerable paths (directory brute-forcing / WordPress scanning).",
      "extractive": "At 14:39:26, host intranet-server reported 'Multiple web server 400 error codes from same source ip' from 172.24.249.224 targeting port 80 requesting /webvpn (level 10). At 14:39:26, host intranet-server reported 'Multiple web server 400 error codes from same source ip' from 172.24.249.224 targeting port 80 requesting /white (level 10). At 14:39:26, host intranet-server reported 'Multiple web server 400 error codes from same source ip' from 172.24.249.224 targeting port 80 requesting /wusage (level 10).",
      "abstractive": "At 14.26, host intranet-server reported 'Multiple web server 400 error codes from same source ip' from 172.24.249.224 targeting port 80 requesting /webvpn ."
     },
     "scores": {
      "template": {
-      "rouge1": 0.6241,
-      "rouge2": 0.3453,
-      "rougeL": 0.4397
+      "rouge1": 0.5752,
+      "rouge2": 0.3179,
+      "rougeL": 0.4052
      },
      "extractive": {
       "rouge1": 0.3497,
@@ -1137,15 +1137,15 @@
     "matched": true,
     "reference": "Between 14:44 and 15:05 UTC on 29 Jan 2022 Suricata saw 82 invalid TLS handshake messages on 172.27.180.4, mostly on port 443, from 10.70.32.4 and external addresses such as 114.179.184.144, during the password cracking phase. The traffic is malformed TLS; check whether it hides tunnelling and review the hosts involved.",
     "outputs": {
-     "template": "From 2022-01-29 14:44:38 to 15:05:01 UTC (20 min 23 s), 172.27.180.4 (ports 443) raised 82 alerts, mainly 'Suricata: Alert - SURICATA TLS invalid handshake message' (82). The activity came from 10.70.32.4 (31 alerts), 114.179.184.144 (9 alerts), 54.73.165.101 (5 alerts) and 20 more. Severity is Medium (max Wazuh level 6) in attack phase(s) cracking. Recommended action: Check the TLS clients involved; malformed TLS traffic can indicate tunnelling or non-TLS traffic on TLS ports.",
+     "template": "From 2022-01-29 14:44:38 to 15:05:01 UTC (20 min 23 s), 172.27.180.4 (ports 443) raised 82 alerts, mainly 'Suricata: Alert - SURICATA TLS invalid handshake message' (82). The activity came from 10.70.32.4 (31 alerts), 114.179.184.144 (9 alerts), 54.73.165.101 (5 alerts) and 20 more. Severity is Medium (max Wazuh level 6) in attack phase(s) cracking. Aspects: repeated activity; it was only attempted (no alert reports a success). Recommended action: Check the TLS clients involved; malformed TLS traffic can indicate tunnelling or non-TLS traffic on TLS ports.",
      "extractive": "At 14:44:38, host 172.27.180.4 reported 'Suricata: Alert - SURICATA TLS invalid handshake message' from 114.179.184.93 targeting port 40922 (level 6). At 14:44:38, host 172.27.180.4 reported 'Suricata: Alert - SURICATA TLS invalid handshake message' from 10.70.32.4 targeting port 443 (level 6). At 14:44:38, host 172.27.180.4 reported 'Suricata: Alert - SURICATA TLS invalid handshake message' from 114.179.184.93 targeting port 40924 (level 6).",
      "abstractive": "At 14.44:38, host 172.27.180.4 reported 'Suricata: Alert - SURICATA TLS invalid handshake message' from 114.179.184.93 targeting port 40922 ."
     },
     "scores": {
      "template": {
-      "rouge1": 0.5395,
-      "rouge2": 0.2,
-      "rougeL": 0.3289
+      "rouge1": 0.5122,
+      "rouge2": 0.1852,
+      "rougeL": 0.3049
      },
      "extractive": {
       "rouge1": 0.3239,
@@ -1166,15 +1166,15 @@
     "matched": true,
     "reference": "From 14:44 to 15:05 UTC on 29 Jan 2022 there were 82 TLS invalid record or traffic alerts on 172.27.180.4 (port 443) from 10.70.32.4 and several external IPs, overlapping the cracking phase. Malformed TLS traffic may indicate non TLS data on TLS ports. Inspect these sessions.",
     "outputs": {
-     "template": "From 2022-01-29 14:44:38 to 15:05:01 UTC (20 min 23 s), 172.27.180.4 (ports 443) raised 82 alerts, mainly 'Suricata: Alert - SURICATA TLS invalid record/traffic' (82). The activity came from 10.70.32.4 (31 alerts), 114.179.184.144 (9 alerts), 54.73.165.101 (5 alerts) and 20 more. Severity is Medium (max Wazuh level 6) in attack phase(s) cracking. Recommended action: Check the TLS clients involved; malformed TLS traffic can indicate tunnelling or non-TLS traffic on TLS ports.",
+     "template": "From 2022-01-29 14:44:38 to 15:05:01 UTC (20 min 23 s), 172.27.180.4 (ports 443) raised 82 alerts, mainly 'Suricata: Alert - SURICATA TLS invalid record/traffic' (82). The activity came from 10.70.32.4 (31 alerts), 114.179.184.144 (9 alerts), 54.73.165.101 (5 alerts) and 20 more. Severity is Medium (max Wazuh level 6) in attack phase(s) cracking. Aspects: repeated activity; it was only attempted (no alert reports a success). Recommended action: Check the TLS clients involved; malformed TLS traffic can indicate tunnelling or non-TLS traffic on TLS ports.",
      "extractive": "At 14:44:38, host 172.27.180.4 reported 'Suricata: Alert - SURICATA TLS invalid record/traffic' from 114.179.184.93 targeting port 40922 (level 6). At 14:44:38, host 172.27.180.4 reported 'Suricata: Alert - SURICATA TLS invalid record/traffic' from 10.70.32.4 targeting port 443 (level 6). At 14:44:38, host 172.27.180.4 reported 'Suricata: Alert - SURICATA TLS invalid record/traffic' from 114.179.184.93 targeting port 40924 (level 6).",
      "abstractive": "At 14.44:38, host 172.27.180.4 reported 'Suricata: Alert - SURICATA TLS invalid record/traffic' from 114.179.184.93 targeting port 40922 ."
     },
     "scores": {
      "template": {
-      "rouge1": 0.5655,
-      "rouge2": 0.2657,
-      "rougeL": 0.4138
+      "rouge1": 0.5223,
+      "rouge2": 0.2452,
+      "rougeL": 0.3822
      },
      "extractive": {
       "rouge1": 0.3407,
@@ -1195,15 +1195,15 @@
     "matched": true,
     "reference": "At 15:20 to 15:21 UTC on 29 Jan 2022, user gmarsh on intranet-server ran sudo for the first time, switched to root and opened root sessions (MITRE T1548.003). This is the privilege escalation step of the attack. Verify the activity of gmarsh, review the root commands and reset the account credentials.",
     "outputs": {
-     "template": "From 2022-01-29 15:20:51 to 15:21:09 UTC (18 s), intranet-server raised 9 alerts, mainly 'PAM: Login session opened' (3), plus Successful sudo to ROOT executed (2), PAM: Login session closed (2). The activity came from user root, user gmarsh. Severity is Medium (max Wazuh level 4; MITRE T1078, T1548.003 - Defense Evasion, Persistence, Privilege Escalation, Initial Access) in attack phase(s) privilege_escalation. The most unusual alert was 'First time user executed sudo'. Recommended action: Verify the sudo/root activity with the account owner, review commands run, and reset credentials if it was not authorised.",
+     "template": "From 2022-01-29 15:20:51 to 15:21:09 UTC (18 s), intranet-server raised 9 alerts, mainly 'PAM: Login session opened' (3), plus Successful sudo to ROOT executed (2), PAM: Login session closed (2). The activity came from user root, user gmarsh. Severity is Medium (max Wazuh level 4; MITRE T1078, T1548.003 - Defense Evasion, Persistence, Privilege Escalation, Initial Access) in attack phase(s) privilege_escalation. Aspects: repeated activity; it succeeded (7 success alert(s), e.g. 'User successfully changed UID'). The most unusual alert was 'First time user executed sudo'. Recommended action: Verify the sudo/root activity with the account owner, review commands run, and reset credentials if it was not authorised.",
      "extractive": "At 15:20:51, host intranet-server reported 'PAM: Login session opened' for user gmarsh (level 3). At 15:21:04, host intranet-server reported 'Successful sudo to ROOT executed' for user root (level 3). At 15:21:05, host intranet-server reported 'PAM: Login session closed' for user root (level 3).",
      "abstractive": "At 15:20:51, host intranet-server reported 'User successfully changed UID' for user gmarsh (level 3) At 15:21:02, host Intranet server reported 'First time user executed sudo' foruser root (level 4) At15:21,04, hostintranet"
     },
     "scores": {
      "template": {
-      "rouge1": 0.5128,
-      "rouge2": 0.1688,
-      "rougeL": 0.3333
+      "rouge1": 0.4678,
+      "rouge2": 0.1538,
+      "rougeL": 0.3041
      },
      "extractive": {
       "rouge1": 0.3178,
@@ -1224,15 +1224,15 @@
     "matched": true,
     "reference": "On 30 Jan 2022 from 07:27 to 10:50 UTC Wazuh aggregated 50 repeated IDS alerts on port 443, mostly involving 10.70.32.4 and 172.24.249.224 on 172.27.180.4. No attack phase was active, so these are probably repeated TLS anomaly signatures. Tune the rule and confirm the traffic is legitimate.",
     "outputs": {
-     "template": "From 2022-01-30 07:27:13 to 10:50:10 UTC (3 h 22 min), 172.27.180.4, 172.24.249.224 (ports 443) raised 50 alerts, mainly 'Multiple IDS alerts for same id' (42), plus Multiple IDS alerts for same id (ignoring now this id) (8). The activity came from 10.70.32.4 (24 alerts), 172.24.249.224 (12 alerts), 217.74.75.90 (2 alerts) and 12 more. Severity is Critical (max Wazuh level 11). Recommended action: Review the alerts and confirm whether the activity is expected.",
+     "template": "From 2022-01-30 07:27:13 to 10:50:10 UTC (3 h 22 min), 172.27.180.4, 172.24.249.224 (ports 443) raised 50 alerts, mainly 'Multiple IDS alerts for same id' (42), plus Multiple IDS alerts for same id (ignoring now this id) (8). The activity came from 10.70.32.4 (24 alerts), 172.24.249.224 (12 alerts), 217.74.75.90 (2 alerts) and 12 more. Severity is Critical (max Wazuh level 11). Aspects: ongoing activity; it was only attempted (no alert reports a success). Recommended action: Review the alerts and confirm whether the activity is expected.",
      "extractive": "At 07:27:13, host 172.27.180.4 reported 'Multiple IDS alerts for same id' from 10.70.32.4 targeting port 443 (level 10). At 07:35:38, host 172.27.180.4 reported 'Multiple IDS alerts for same id' from 10.70.32.4 targeting port 443 (level 10). At 09:12:04, host 172.24.249.224 reported 'Multiple IDS alerts for same id (ignoring now this id)' from 172.24.249.224 targeting port 443 (level 11).",
      "abstractive": "At 10.70.4 reported 'Multiple IDS alerts for same id' from 10.32.4 targeting port 443 (level 10) At 09:12:04, host 172.24.249.224 reported 'multiple IDS Alerts for same ID (ignoring now this id)' from 172.249"
     },
     "scores": {
      "template": {
-      "rouge1": 0.4503,
-      "rouge2": 0.2013,
-      "rougeL": 0.3046
+      "rouge1": 0.4417,
+      "rouge2": 0.1863,
+      "rougeL": 0.2945
      },
      "extractive": {
       "rouge1": 0.2857,
@@ -1253,15 +1253,15 @@
     "matched": true,
     "reference": "Between 07:35 and 10:50 UTC on 30 Jan 2022, 30 alerts for multiple IDS events from the same source were raised, mostly for 10.70.32.4 towards 172.27.180.4 on port 443. This is repeated IDS noise outside the attack window. Review and tune the triggering signature.",
     "outputs": {
-     "template": "From 2022-01-30 07:35:38 to 10:50:07 UTC (3 h 14 min), 172.27.180.4, 172.24.249.224 (ports 443, 53) raised 30 alerts, mainly 'Multiple IDS events from same source ip' (27), plus Multiple IDS events from same source ip (ignoring now this srcip and id) (3). The activity came from 10.70.32.4 (22 alerts), 172.24.249.224 (3 alerts), 79.133.177.231 (1 alert) and 4 more. Severity is Critical (max Wazuh level 11). Recommended action: Review the alerts and confirm whether the activity is expected.",
+     "template": "From 2022-01-30 07:35:38 to 10:50:07 UTC (3 h 14 min), 172.27.180.4, 172.24.249.224 (ports 443, 53) raised 30 alerts, mainly 'Multiple IDS events from same source ip' (27), plus Multiple IDS events from same source ip (ignoring now this srcip and id) (3). The activity came from 10.70.32.4 (22 alerts), 172.24.249.224 (3 alerts), 79.133.177.231 (1 alert) and 4 more. Severity is Critical (max Wazuh level 11). Aspects: ongoing activity; it was only attempted (no alert reports a success). Recommended action: Review the alerts and confirm whether the activity is expected.",
      "extractive": "At 07:35:38, host 172.24.249.224 reported 'Multiple IDS events from same source ip' from 79.133.177.231 targeting port 56462 (level 10). At 07:40:08, host 172.27.180.4 reported 'Multiple IDS events from same source ip' from 10.70.32.4 targeting port 443 (level 10). At 08:13:09, host 172.27.180.4 reported 'Multiple IDS events from same source ip (ignoring now this srcip and id)' from 10.70.32.4 targeting port 443 (level 11).",
      "abstractive": "At 07:35:38, host 172.24.249.224 reported 'Multiple IDS events from same source ip' from 79.133.177.177 . At 08:13:09, host172.27.180.4 reported 'multiple IDS event' from 10.70.32."
     },
     "scores": {
      "template": {
-      "rouge1": 0.4667,
-      "rouge2": 0.1892,
-      "rougeL": 0.3067
+      "rouge1": 0.4321,
+      "rouge2": 0.175,
+      "rougeL": 0.284
      },
      "extractive": {
       "rouge1": 0.3165,
@@ -1282,15 +1282,15 @@
     "matched": true,
     "reference": "From 14:31 to 16:12 UTC on 27 Jan 2022, collinsbecker-mail logged 95 failed PAM logins, 29 Dovecot invalid user attempts and 7 brute force alerts, almost all from 10.70.34.215 for user michael.sutton (MITRE T1110). Repeated failures look like password guessing or a misconfigured mail client. Check the account, enforce lockout and block the source if it is malicious.",
     "outputs": {
-     "template": "From 2022-01-27 14:31:19 to 16:12:06 UTC (1 h 40 min), collinsbecker-mail, mail raised 142 alerts, mainly 'PAM: User login failed' (95), plus Dovecot Invalid User Login Attempt (29), PAM: Multiple failed logins in a small period of time (11). The activity came from 10.70.34.215 (140 alerts), 172.24.251.90 (2 alerts). Severity is Critical (max Wazuh level 10; MITRE T1110.001, T1110 - Credential Access). The most unusual alert was 'Dovecot brute force attack (multiple auth failures)'. Recommended action: Block the source IP, enforce account lockout and MFA, and check for any successful logins after the failures.",
+     "template": "From 2022-01-27 14:31:19 to 16:12:06 UTC (1 h 40 min), collinsbecker-mail, mail raised 142 alerts, mainly 'PAM: User login failed' (95), plus Dovecot Invalid User Login Attempt (29), PAM: Multiple failed logins in a small period of time (11). The activity came from 10.70.34.215 (140 alerts), 172.24.251.90 (2 alerts). Severity is Critical (max Wazuh level 10; MITRE T1110.001, T1110 - Credential Access). Aspects: ongoing activity; it was only attempted (no alert reports a success). The most unusual alert was 'Dovecot brute force attack (multiple auth failures)'. Recommended action: Block the source IP, enforce account lockout and MFA, and check for any successful logins after the failures.",
      "extractive": "At 14:31:19, host collinsbecker-mail reported 'PAM: User login failed' for user michael.sutton from 10.70.34.215 (level 5). At 14:31:47, host collinsbecker-mail reported 'Dovecot Invalid User Login Attempt' for user michael.sutton from 10.70.34.215 (level 5). At 14:31:55, host collinsbecker-mail reported 'PAM: Multiple failed logins in a small period of time' for user michael.sutton from 10.70.34.215 (level 10).",
      "abstractive": "At 14:31:19, host collinsbecker-mail reported 'PAM: User login failed' for user michael.sutton from 10.70.34.215 (level 5)"
     },
     "scores": {
      "template": {
-      "rouge1": 0.5349,
-      "rouge2": 0.1765,
-      "rougeL": 0.3256
+      "rouge1": 0.5109,
+      "rouge2": 0.1648,
+      "rougeL": 0.3043
      },
      "extractive": {
       "rouge1": 0.3262,
@@ -1311,15 +1311,15 @@
     "matched": true,
     "reference": "Between 13:12 and 13:47 UTC on 29 Jan 2022, 10.70.34.215 caused 38 failed PAM logins and 11 invalid Dovecot logins for michael.sutton on collinsbecker-mail, with brute force correlation alerts (T1110). Investigate the login failures and lock the account if they are not the user's own.",
     "outputs": {
-     "template": "From 2022-01-29 13:12:41 to 13:47:56 UTC (35 min 15 s), collinsbecker-mail, mail raised 56 alerts, mainly 'PAM: User login failed' (38), plus Dovecot Invalid User Login Attempt (11), PAM: Multiple failed logins in a small period of time (5). The activity came from 10.70.34.215 (55 alerts). Severity is Critical (max Wazuh level 10; MITRE T1110.001, T1110 - Credential Access). The most unusual alert was 'PAM: Login session closed'. Recommended action: Block the source IP, enforce account lockout and MFA, and check for any successful logins after the failures.",
+     "template": "From 2022-01-29 13:12:41 to 13:47:56 UTC (35 min 15 s), collinsbecker-mail, mail raised 56 alerts, mainly 'PAM: User login failed' (38), plus Dovecot Invalid User Login Attempt (11), PAM: Multiple failed logins in a small period of time (5). The activity came from 10.70.34.215 (55 alerts). Severity is Critical (max Wazuh level 10; MITRE T1110.001, T1110 - Credential Access). Aspects: ongoing activity; it was only attempted (no alert reports a success). The most unusual alert was 'PAM: Login session closed'. Recommended action: Block the source IP, enforce account lockout and MFA, and check for any successful logins after the failures.",
      "extractive": "At 13:23:42, host collinsbecker-mail reported 'PAM: User login failed' for user michael.sutton from 10.70.34.215 (level 5). At 13:36:32, host collinsbecker-mail reported 'PAM: Multiple failed logins in a small period of time' for user michael.sutton from 10.70.34.215 (level 10). At 13:36:36, host collinsbecker-mail reported 'Dovecot Invalid User Login Attempt' for user michael.sutton from 10.70.34.215 (level 5).",
      "abstractive": "At 13:12:41, host mail reported 'PAM: Login session closed' for user gmarsh (level 3) At 13:23:42, host collinsbecker-mail reported 'Dovecot brute force attack (multiple auth failures)' for user michael.sutton from 10.70."
     },
     "scores": {
      "template": {
-      "rouge1": 0.4503,
-      "rouge2": 0.094,
-      "rougeL": 0.2119
+      "rouge1": 0.4172,
+      "rouge2": 0.087,
+      "rougeL": 0.1963
      },
      "extractive": {
       "rouge1": 0.2946,
@@ -1340,15 +1340,15 @@
     "matched": true,
     "reference": "On 25 Jan 2022 at 06:09 to 06:20 UTC Suricata logged 78 APT user agent alerts on port 80 from 10.70.32.4, 192.168.188.120 and 172.24.249.224. This is normal Linux package update traffic. No action is needed.",
     "outputs": {
-     "template": "From 2022-01-25 06:09:45 to 06:19:58 UTC (10 min 12 s), 172.27.180.4, 192.168.3.116, 172.24.249.224 (ports 80) raised 78 alerts, mainly 'Suricata: Alert - ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management' (78). The activity came from 10.70.32.4 (39 alerts), 192.168.188.120 (31 alerts), 172.24.249.224 (8 alerts). Severity is Medium (max Wazuh level 6). Recommended action: Review the alerts and confirm whether the activity is expected.",
+     "template": "From 2022-01-25 06:09:45 to 06:19:58 UTC (10 min 12 s), 172.27.180.4, 192.168.3.116, 172.24.249.224 (ports 80) raised 78 alerts, mainly 'Suricata: Alert - ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management' (78). The activity came from 10.70.32.4 (39 alerts), 192.168.188.120 (31 alerts), 172.24.249.224 (8 alerts). Severity is Medium (max Wazuh level 6). Aspects: repeated activity; it was only attempted (no alert reports a success). Recommended action: Review the alerts and confirm whether the activity is expected.",
      "extractive": "At 06:09:45, host 192.168.3.116 reported 'Suricata: Alert - ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management' from 192.168.188.120 targeting port 80 requesting /ubuntu/pool/main/p/python3.6/python3.6-dev_3.6.9-1%7e18.04u (level 3). At 06:09:45, host 172.27.180.4 reported 'Suricata: Alert - ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management' from 10.70.32.4 targeting port 80 requesting /ubuntu/pool/main/p/python3.6/python3.6-dev_3.6.9-1%7e18.04u (level 3). At 06:09:45, host 172.27.180.4 reported 'Suricata: Alert - ET POLICY GNU/Linux APT User-Agent Outbound likely related to package management' from 10.70.32.4 targeting port 80 requesting /ubuntu/pool/main/s/systemd/libsystemd0_237-3ubuntu10.50_amd (level 3).",
      "abstractive": "'Suricata: Alert - ET POLICYGN/Linux APT User-Agent Outbound likely related to package management' from 192.168.188.120 ."
     },
     "scores": {
      "template": {
-      "rouge1": 0.4964,
-      "rouge2": 0.237,
-      "rougeL": 0.3796
+      "rouge1": 0.4698,
+      "rouge2": 0.2177,
+      "rougeL": 0.3624
      },
      "extractive": {
       "rouge1": 0.2474,
@@ -1369,15 +1369,15 @@
     "matched": true,
     "reference": "At 12:04 to 12:12 UTC on 29 Jan 2022 Suricata saw 14 DNS queries to .cloud domains on port 53 from 172.24.249.224 and 10.70.32.4. These alerts are informational; check that the queried domains are legitimate.",
     "outputs": {
-     "template": "From 2022-01-29 12:04:47 to 12:12:00 UTC (7 min 13 s), 172.24.249.224, 172.27.180.4 (ports 53) raised 14 alerts, mainly 'Suricata: Alert - ET INFO Observed DNS Query to .cloud TLD' (14). The activity came from 172.24.249.224 (8 alerts), 10.70.32.4 (6 alerts). Severity is Medium (max Wazuh level 6). Recommended action: Check DNS logs for long or high-volume queries (possible DNS tunnelling / exfiltration) and block the destination.",
+     "template": "From 2022-01-29 12:04:47 to 12:12:00 UTC (7 min 13 s), 172.24.249.224, 172.27.180.4 (ports 53) raised 14 alerts, mainly 'Suricata: Alert - ET INFO Observed DNS Query to .cloud TLD' (14). The activity came from 172.24.249.224 (8 alerts), 10.70.32.4 (6 alerts). Severity is Medium (max Wazuh level 6). Aspects: repeated activity; it was only attempted (no alert reports a success). Recommended action: Check DNS logs for long or high-volume queries (possible DNS tunnelling / exfiltration) and block the destination.",
      "extractive": "At 12:04:47, host 172.24.249.224 reported 'Suricata: Alert - ET INFO Observed DNS Query to .cloud TLD' from 172.24.249.224 targeting port 53 (level 6). At 12:05:55, host 172.24.249.224 reported 'Suricata: Alert - ET INFO Observed DNS Query to .cloud TLD' from 172.24.249.224 targeting port 53 (level 6). At 12:05:55, host 172.27.180.4 reported 'Suricata: Alert - ET INFO Observed DNS Query to .cloud TLD' from 10.70.32.4 targeting port 53 (level 6).",
      "abstractive": "At 12.04:47, host 172.24.249.224 reported 'Suricata: Alert - ET INFO Observed DNS Query to .cloud TLD' from 172.249 .224 targeting port 53 (level 6)"
     },
     "scores": {
      "template": {
-      "rouge1": 0.4762,
-      "rouge2": 0.2258,
-      "rougeL": 0.3651
+      "rouge1": 0.4348,
+      "rouge2": 0.2059,
+      "rougeL": 0.3333
      },
      "extractive": {
       "rouge1": 0.3609,
@@ -1394,7 +1394,7 @@
   ],
   "abstractive_model": "sshleifer/distilbart-cnn-6-6",
   "abstractive_error": null,
-  "abstractive_seconds_per_summary": 1.95
+  "abstractive_seconds_per_summary": 2.73
  },
  "ner": {
   "n_sentences": 50,
@@ -1492,31 +1492,31 @@
  "hmm_vs_spacy": {
   "n_sentences": 40,
   "n_tokens": 1045,
-  "agreement": 0.558,
+  "agreement": 0.678,
   "top_disagreements": [
    {
     "pair": "HMM NUM / spaCy NOUN",
-    "count": 84
-   },
-   {
-    "pair": "HMM PRT / spaCy .",
-    "count": 79
-   },
-   {
-    "pair": "HMM NUM / spaCy .",
-    "count": 78
+    "count": 86
    },
    {
     "pair": "HMM DET / spaCy NOUN",
-    "count": 37
+    "count": 42
    },
    {
-    "pair": "HMM NUM / spaCy VERB",
-    "count": 34
+    "pair": "HMM NOUN / spaCy VERB",
+    "count": 32
    },
    {
-    "pair": "HMM VERB / spaCy NOUN",
-    "count": 29
+    "pair": "HMM . / spaCy NOUN",
+    "count": 25
+   },
+   {
+    "pair": "HMM PRT / spaCy NOUN",
+    "count": 23
+   },
+   {
+    "pair": "HMM DET / spaCy NUM",
+    "count": 21
    }
   ]
  },
@@ -1667,7 +1667,7 @@
     ],
     "pred": [
      "172.19.131.174",
-     "serve",
+     null,
      "intranet-server:80"
     ],
     "correct": false
@@ -1695,7 +1695,7 @@
     ],
     "pred": [
      "172.19.131.174",
-     "serve",
+     null,
      "intranet-server:80"
     ],
     "correct": false
@@ -1709,7 +1709,7 @@
     ],
     "pred": [
      "172.19.131.174",
-     "serve",
+     null,
      "intranet-server:80"
     ],
     "correct": false

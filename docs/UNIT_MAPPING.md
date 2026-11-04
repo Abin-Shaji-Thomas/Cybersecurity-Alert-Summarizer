@@ -31,7 +31,7 @@ Topics marked **documentation only** are explained here and in code comments but
 | Topic | File / function | UI | Explanation |
 |---|---|---|---|
 | POS tagging | `pos_tags` (spaCy) | NLP Lab → Unit II | Neural tagger baseline. |
-| HMM for POS tagging | `HMMTagger.fit` (own counts), `get_hmm` | NLP Lab (HMM vs spaCy table), Evaluation | Transition + emission probabilities from the NLTK Penn Treebank sample. |
+| HMM for POS tagging | `HMMTagger.fit` (own counts), `get_hmm`, `hmm_input` | NLP Lab (HMM vs spaCy table), Evaluation | Transition + emission probabilities from the NLTK Penn Treebank sample; IPs, hostnames, quotes and brackets are masked to treebank tokens first. |
 | Viterbi | `HMMTagger.viterbi` (own) | NLP Lab, `tests/test_nlp.py` | Dynamic programming over the tag lattice to find the best tag sequence. |
 | Named entities & NER | `get_nlp` (spaCy + EntityRuler), `extract_entities` | Entities tab, Incident entities, Evaluation (P/R/F1) | IP, PORT, CVE, MITRE_TECHNIQUE, HOST, USER, PROTOCOL, TOOL patterns + spaCy's statistical entities. |
 | Context-free grammar | `CNF_GRAMMAR`, `grammar_as_text` | NLP Lab (grammar listing) | Toy grammar in Chomsky Normal Form for "the attacker scanned the server". Concept demo. |
@@ -43,12 +43,12 @@ Topics marked **documentation only** are explained here and in code comments but
 | Topic | File / function | UI | Explanation |
 |---|---|---|---|
 | Transition-based dependency parsing | spaCy parser (`get_nlp`) | NLP Lab arcs | spaCy uses a stack/buffer transition system with a neural classifier (explained in the module docstring). |
-| Graph-based dependency parsing | — | **documentation only** | Explained in the module docstring (maximum spanning tree over scored arcs). |
+| Graph-based dependency parsing | `chu_liu_edmonds`, `mst_demo` (own) | NLP Lab → Unit III | Maximum spanning tree over hand-scored arcs for one toy sentence: greedy heads form a cycle, the cycle is contracted and re-scored, and the result is compared with spaCy's parse. Concept demo. |
 | Neural constituency parsing | — | **documentation only** | Explained in the module docstring (span scoring + CKY-style search); constituency parsing is shown with our toy CKY. |
 | Heads & head-finding | `np_head`, `noun_phrase_heads` | NLP Lab → Unit III | Head word of each noun phrase and its compound modifiers. |
 | Triple extraction | `extract_triple` | Timeline actor/target, SRL, NLP Lab | (actor, action, target) from the dependency tree. |
 | Evaluating parsers | `evaluate_triples` | Evaluation page | Precision / recall of triples against `data/eval/triples_gold.csv`. |
-| Lexical semantics | `wordnet_info`, `normalize_action`, `noun_to_verb` | NLP Lab (WordNet table) | WordNet synonyms/hypernyms; derivational morphology turns "authentication" into "authenticate". |
+| Lexical semantics | `wordnet_info`, `normalize_action`, `noun_to_verb` | NLP Lab (WordNet table), SRL action | WordNet synonyms/hypernyms; derivational morphology turns "authentication" into "authenticate" (the action verb of a triple). |
 | Vector semantics | `cooccurrence_vectors`, `cosine_neighbours`, `cosine` | Lab corpus "nearest neighbours" | Word vectors = rows of a word × context co-occurrence matrix over our corpus. |
 
 ## Unit IV – Embeddings & Information Extraction (`backend/nlp/unit4_tfidf_ie.py`)
@@ -70,9 +70,9 @@ Topics marked **documentation only** are explained here and in code comments but
 |---|---|---|---|
 | Temporal analysis | `assign_phases`, `detect_scenario`, `phase_from_tactic` | Timeline colours, phases slot | Attack phase from labels.csv windows (AIT-ADS) or MITRE tactic rules. |
 | TimeBank | `temporal_links` | Lab corpus / insights | TimeBank-style events, time expressions and BEFORE/OVERLAPS links between incidents (comments explain the relation). |
-| Aspect analysis | `fill_template` slots | Incident detail | **Partial:** each incident is described along fixed aspects (who, what, target, when, severity, action). There is no aspect-based sentiment classifier (alerts carry no opinions). |
+| Aspect analysis | `incident_aspects` | Incident detail badges, summary sentence, slots, PDF | Two aspects per incident: frequency (one-off / repeated / ongoing) and outcome (attempted / succeeded, with the evidence alert). No sentiment classifier (alerts carry no opinions). |
 | Template filling | `fill_template`, `render_template` | Incident detail (main summary), PDF | Main summary: slots rendered as a 3–5 sentence paragraph. |
-| Semantic roles / SRL | `srl_roles` | Incident detail "Semantic roles", NLP Lab | Rule-based Agent / Action / Patient / Time / Location from the triple. |
+| Semantic roles / SRL | `srl_roles` | Incident detail "Semantic roles", NLP Lab | Rule-based Agent / Action / Patient / Time / Location from the triple; Action is the triple's verb, or "trigger" when the description has no action word. |
 | Summarisation (extractive) | `extractive_summary` | Incident detail | Sentences closest to the incident's TF-IDF centroid. |
 | Summarisation (abstractive) | `abstractive_summary` (distilbart-cnn-6-6) | Incident detail "Generate AI summary" | Pretrained model on CPU, on demand. |
 | Question answering & IR | `retrieve`, `answer_question` | Ask tab | TF-IDF retrieval of supporting alerts + rules over entities/relations. |

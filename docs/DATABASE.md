@@ -71,7 +71,7 @@ erDiagram
         int cluster
         text phase
         text triple_actor
-        text triple_action
+        text triple_action "action verb"
         text triple_target
     }
     ENTITIES {
