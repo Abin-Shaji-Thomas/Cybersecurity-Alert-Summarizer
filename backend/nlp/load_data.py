@@ -31,11 +31,13 @@ PORT_FROM_WEBLOG = {"https": 443, "ssl": 443}
 
 def read_alert_file(path_or_text):
     """Read a JSON array or JSON-lines file (path or already-loaded text) into a list of dicts."""
-    if isinstance(path_or_text, (bytes, str)) and not str(path_or_text).lstrip().startswith(("[", "{")):
-        with open(path_or_text, "r", encoding="utf-8") as f:
+    if isinstance(path_or_text, bytes):                      # uploaded file content
+        text = path_or_text.decode("utf-8-sig")
+    elif path_or_text.lstrip().startswith(("[", "{")):       # already JSON text
+        text = path_or_text
+    else:                                                    # a file path
+        with open(path_or_text, "r", encoding="utf-8-sig") as f:
             text = f.read()
-    else:
-        text = path_or_text.decode("utf-8") if isinstance(path_or_text, bytes) else path_or_text
     text = text.strip()
     if not text:
         return []
